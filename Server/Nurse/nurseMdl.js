@@ -4,7 +4,8 @@ mongoose.connect('mongodb://localhost/db');
 
 const nurseSchema = new Schema({
   'first': String,
-  'last':	String,
+  'last': String,
+  'beds': [String]
 });
 
 const nurse = mongoose.model('nurse', nurseSchema);
