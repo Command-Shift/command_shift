@@ -21,7 +21,6 @@ function post(req, res) {
 }
 
 function remove(req, res) {
-  console.log(req.body.first, req.body.last);
   Nurses.remove({first: req.body.first, last: req.body.last}, function(err, result) {
     res.send('deleted');
   })

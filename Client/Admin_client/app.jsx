@@ -70,6 +70,11 @@ class App extends Component {
         emptyBeds.shift();
         const occupied = remove(emptyBeds, [...this.state.beds]);
         const census = occupied.length;
+        const post = $.ajax({
+          method: 'POST',
+          url: '/emptyBeds',
+          data: emptyBeds
+        });
         this.setState({
           occupied: occupied,
           census: census,
@@ -89,7 +94,6 @@ class App extends Component {
           first: value[1],
           last: value[2]
         };
-        console.log(obj);
         const post = $.ajax({
           method: 'DELETE',
           url: '/nurse',
@@ -145,7 +149,7 @@ class App extends Component {
         assignment.push(occupied.splice(0, spread.shift()));
       }
     }
-
+    console.log(assignment);
     this.setState({assignment: assignment, view: 'assign'});
 
     function randomSpread(arr) {

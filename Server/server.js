@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const nurseCtrl = require('./Nurse/nurseCtrl');
 
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static('public'));
+app.use(express.static('Build'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/Build/index.html');
