@@ -1,3 +1,4 @@
+"use strict";
 const Beds = require('./bedMdl');
 
 // function changeBed(req,res,next){
@@ -62,7 +63,6 @@ function getEmptyBeds(req, res, next) {
     if (err) throw err;
     const arr = beds.map(el => el.bed);
     req.body.emptyBeds = arr;
-    console.log(req.body.emptyBeds);
     next();
   });
 }
