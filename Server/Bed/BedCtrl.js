@@ -34,27 +34,29 @@ function addBeds(req, res){
 
 // remove a patient from a bed
 function emptyBeds(req,res){
-	var bedsToEmpty = req.body.emptyBeds;
-	bedsToEmpty.forEach(function(bed){
-		Beds.update({bed: bed}, {$set: {status: false }});
-	})
-	res.sendStatus('Patients removed!')
+  let bedsToEmpty = req.body.emptyBeds;
+  bedsToEmpty.forEach(bed => {
+    Beds.update({ bed }, { $set: { status: false } });
+  });
+  res.sendStatus('Patients removed!');
 }
 
 // query beds DB for all occupied beds, sent to the shift generating middleware algorithm
-function getOccupiedBeds(req,res,next){
-	Beds.find({ status: true }, 'bed', function(err, beds){
-		if (err) throw err;
-		const arr = beds.map(el => el.bed);
-    console.log(arr);
-		req.body.occupied = arr;
-		next();
-	});
+function getOccupiedBeds(req, res, next) {
+  Beds.find({ status: true }, 'bed', (err, beds) => {
+    if (err) throw err;
+    const arr = beds.map(el => el.bed);
+    req.body.occupied = arr;
+    next();
+  });
 }
 
 function assign(req, res, next) {
-  function shuffle(a) { // suffles arrays
-    var j, x, i;
+  function shuffle(arr) { // suffles arrays
+    let j;
+    let x;
+    let i;
+    const a = [...arr];
     for (i = a.length; i; i--) {
       j = Math.floor(Math.random() * i);
       x = a[i - 1];
