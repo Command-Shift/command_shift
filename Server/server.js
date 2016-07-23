@@ -11,7 +11,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('Build'));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/Build/index.html');
+  res.sendFile(path.join(__dirname, '../Build', 'admin.html'));
+});
+
+app.get('/shift', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Build', 'nurse.html'));
 });
 
 app.delete('/nurse', nurseCtrl.remove);
