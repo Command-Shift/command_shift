@@ -4,11 +4,7 @@
   "description": "An automated Certified Nurse's Assistant assignment generator created for Ivy Creek Healthcare and Wellness Centre",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
-=======
-    "view": "webpack-dev-server --content-base Build/ --inline",
     "start": "nodemon Server/server.js"
->>>>>>> upstream/master
   },
   "author": "s1akr",
   "license": "ISC",

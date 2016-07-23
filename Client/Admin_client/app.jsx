@@ -15,6 +15,8 @@ class App extends Component {
     this.select = this.select.bind(this);
     this.reset = this.reset.bind(this);
     this.assign = this.assign.bind(this);
+    this.add = this.add.bind(this);
+
     this.state = {
       beds: ['2','4','6','8A','8B','1A','1B','10A','10B','3A'
       ,'3B','12A','12B','5A','5B','14A','14B','7A','7B','16A','16B'
@@ -50,20 +52,7 @@ class App extends Component {
       let value = event.target.value;
 
       if (value.slice(0, 3) === 'add') {
-        console.log('add');
-        value = value.split(' ');
-        const obj = {
-          first: value[1],
-          last: value[2]
-        };
-        const post = $.ajax({
-          method: 'POST',
-          url: '/nurse',
-          data: obj
-        });
-        post.then(() => {
-          this.refresh();
-        });
+        this.add(value);
         event.target.value = '';
 
       } else if (value.slice(0, 5) === 'empty') {
@@ -125,69 +114,35 @@ class App extends Component {
   }
 
   assign() {
-    const occupied = [...this.state.occupied];
-    const census = occupied.length;
     const nurses = [...this.state.onduty];
-    let assignment = [];
-
-    if (census % nurses.length === 0) {
-      // even spread
-      const patientsPer = census / nurses.length;
-      let j = 0;
-      let k = patientsPer;
-
-      for (let i = 0; i < nurses.length; i++) {
-        assignment.push(occupied.slice(j, k));
-        j += patientsPer;
-        k += patientsPer;
-      }
-
-    } else {
-      // uneven spread
-      const occupied = [...this.state.occupied];
-      const census = occupied.length;
-      const nurses = [...this.state.onduty];
-      const longRuns = census % nurses.length;
-      const shortRuns = nurses.length - census % nurses.length;
-      const longPatientsPer = Math.floor(census / nurses.length) + 1;
-      const shortPatientsPer = Math.floor(census / nurses.length);
-      const spread = randomSpread([shortRuns, shortPatientsPer, longRuns, longPatientsPer]);
-
-      for (let i = 0; i < nurses.length; i++) {
-        assignment.push(occupied.splice(0, spread.shift()));
-      }
-    }
-    this.setState({assignment: assignment, view: 'assign'});
-
-    function randomSpread(arr) {
-    	let arr1 = [];
-    	let arr2 = [];
-    	let res = [];
-    	for (let i = 0; i < arr[0]; i++) {
-    		arr1.push(arr[1]);
-    	}
-    	for (let i = 0; i < arr[2]; i++) {
-    		arr2.push(arr[3])
-    	}
-    	res = arr1.concat(arr2);
-    	shuffle(res);
-    	return res;
-    }
-
-    function shuffle(a) {
-      var j, x, i;
-      for (i = a.length; i; i--) {
-        j = Math.floor(Math.random() * i);
-        x = a[i - 1];
-        a[i - 1] = a[j];
-        a[j] = x;
-      }
-    }
+    $.ajax({
+      method: 'POST',
+      url: '/assign',
+      data: { onDuty: nurses }
+    }).then((data) => {
+      this.setState({ onduty: nurses, occupied: data, view: 'assign' });
+    });
   }
 
   select(event) {
     this.state.onduty.push(event.target.value);
     this.setState(this.state);
+  }
+
+  add(value) {
+    value = value.split(' ');
+    const obj = {
+      first: value[1],
+      last: value[2]
+    };
+    const post = $.ajax({
+      method: 'POST',
+      url: '/nurse',
+      data: obj
+    });
+    post.then(() => {
+      this.refresh();
+    });
   }
 
   reset() {

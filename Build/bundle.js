@@ -58,9 +58,9 @@
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _nurses2 = __webpack_require__(174);
+	var _nurses = __webpack_require__(174);
 
-	var _nurses3 = _interopRequireDefault(_nurses2);
+	var _nurses2 = _interopRequireDefault(_nurses);
 
 	var _input = __webpack_require__(175);
 
@@ -97,6 +97,8 @@
 	    _this.select = _this.select.bind(_this);
 	    _this.reset = _this.reset.bind(_this);
 	    _this.assign = _this.assign.bind(_this);
+	    _this.add = _this.add.bind(_this);
+
 	    _this.state = {
 	      beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
 	      onduty: [],
@@ -133,27 +135,14 @@
 	        var value = event.target.value;
 
 	        if (value.slice(0, 3) === 'add') {
-	          console.log('add');
-	          value = value.split(' ');
-	          var obj = {
-	            first: value[1],
-	            last: value[2]
-	          };
-	          var post = $.ajax({
-	            method: 'POST',
-	            url: '/nurse',
-	            data: obj
-	          });
-	          post.then(function () {
-	            _this3.refresh();
-	          });
+	          this.add(value);
 	          event.target.value = '';
 	        } else if (value.slice(0, 5) === 'empty') {
 	          var emptyBeds = value.toUpperCase().split(' ');
 	          emptyBeds.shift();
 	          var occupied = remove(emptyBeds, [].concat(_toConsumableArray(this.state.beds)));
 	          var census = occupied.length;
-	          var _post = $.ajax({
+	          var post = $.ajax({
 	            method: 'POST',
 	            url: '/emptyBeds',
 	            data: emptyBeds
@@ -173,16 +162,16 @@
 	          this.assign();
 	        } else if (value.slice(0, 6) === 'remove') {
 	          value = value.split(' ');
-	          var _obj = {
+	          var obj = {
 	            first: value[1],
 	            last: value[2]
 	          };
-	          var _post2 = $.ajax({
+	          var _post = $.ajax({
 	            method: 'DELETE',
 	            url: '/nurse',
-	            data: _obj
+	            data: obj
 	          });
-	          _post2.then(function () {
+	          _post.then(function () {
 	            _this3.refresh();
 	          });
 	          event.target.value = '';
@@ -208,63 +197,16 @@
 	  }, {
 	    key: 'assign',
 	    value: function assign() {
-	      var occupied = [].concat(_toConsumableArray(this.state.occupied));
-	      var census = occupied.length;
+	      var _this4 = this;
+
 	      var nurses = [].concat(_toConsumableArray(this.state.onduty));
-	      var assignment = [];
-
-	      if (census % nurses.length === 0) {
-	        // even spread
-	        var patientsPer = census / nurses.length;
-	        var j = 0;
-	        var k = patientsPer;
-
-	        for (var i = 0; i < nurses.length; i++) {
-	          assignment.push(occupied.slice(j, k));
-	          j += patientsPer;
-	          k += patientsPer;
-	        }
-	      } else {
-	        // uneven spread
-	        var _occupied = [].concat(_toConsumableArray(this.state.occupied));
-	        var _census = _occupied.length;
-	        var _nurses = [].concat(_toConsumableArray(this.state.onduty));
-	        var longRuns = _census % _nurses.length;
-	        var shortRuns = _nurses.length - _census % _nurses.length;
-	        var longPatientsPer = Math.floor(_census / _nurses.length) + 1;
-	        var shortPatientsPer = Math.floor(_census / _nurses.length);
-	        var spread = randomSpread([shortRuns, shortPatientsPer, longRuns, longPatientsPer]);
-
-	        for (var _i = 0; _i < _nurses.length; _i++) {
-	          assignment.push(_occupied.splice(0, spread.shift()));
-	        }
-	      }
-	      this.setState({ assignment: assignment, view: 'assign' });
-
-	      function randomSpread(arr) {
-	        var arr1 = [];
-	        var arr2 = [];
-	        var res = [];
-	        for (var _i2 = 0; _i2 < arr[0]; _i2++) {
-	          arr1.push(arr[1]);
-	        }
-	        for (var _i3 = 0; _i3 < arr[2]; _i3++) {
-	          arr2.push(arr[3]);
-	        }
-	        res = arr1.concat(arr2);
-	        shuffle(res);
-	        return res;
-	      }
-
-	      function shuffle(a) {
-	        var j, x, i;
-	        for (i = a.length; i; i--) {
-	          j = Math.floor(Math.random() * i);
-	          x = a[i - 1];
-	          a[i - 1] = a[j];
-	          a[j] = x;
-	        }
-	      }
+	      $.ajax({
+	        method: 'POST',
+	        url: '/assign',
+	        data: { onDuty: nurses }
+	      }).then(function (data) {
+	        _this4.setState({ onduty: nurses, occupied: data, view: 'assign' });
+	      });
 	    }
 	  }, {
 	    key: 'select',
@@ -273,12 +215,31 @@
 	      this.setState(this.state);
 	    }
 	  }, {
+	    key: 'add',
+	    value: function add(value) {
+	      var _this5 = this;
+
+	      value = value.split(' ');
+	      var obj = {
+	        first: value[1],
+	        last: value[2]
+	      };
+	      var post = $.ajax({
+	        method: 'POST',
+	        url: '/nurse',
+	        data: obj
+	      });
+	      post.then(function () {
+	        _this5.refresh();
+	      });
+	    }
+	  }, {
 	    key: 'reset',
 	    value: function reset() {
-	      var _this4 = this;
+	      var _this6 = this;
 
 	      $.get('/nurses').then(function (data) {
-	        _this4.setState({
+	        _this6.setState({
 	          beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
 	          onduty: [],
 	          occupied: {},
@@ -299,7 +260,7 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
-	            _react2.default.createElement(_nurses3.default, {
+	            _react2.default.createElement(_nurses2.default, {
 	              nurses: this.state.nurses,
 	              select: this.select })
 	          );
