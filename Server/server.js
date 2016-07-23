@@ -21,6 +21,8 @@ app.post('/emptyBeds', bedCtrl.emptyBeds);
 app.post('/assign', bedCtrl.getOccupiedBeds, bedCtrl.assign, nurseCtrl.sendAssignment);
 // app.post('/assign', nurseCtrl.assign);
 app.post('/populate', bedCtrl.populate);
+app.post('/getAssignments', nurseCtrl.postAssignment);
+app.post('/clear', nurseCtrl.clearAssignment);
 
 app.listen(3000, () => {
   console.log('Express listening on port 3000');
