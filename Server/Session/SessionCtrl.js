@@ -1,8 +1,9 @@
-var Session = require('./sessionModel');
+var Session = require('./sessionMdl');
 
 var sessionController = {};
 
-sessionController.startSession = function(req, next) {
+// nurse logs in when they arrive for work, session is kept so that any midshift assignment changes can update automatically via setInterval request
+sessionController.startSession = function(req, res, next) {
   var name = req.body.first + ' ' + req.body.last;
   var newSession = new Session({
     cookieId: name,

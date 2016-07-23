@@ -31,12 +31,12 @@ class App extends Component {
       '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B',
       '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
       onduty: [],
-      occupied: {},
+      occupied: { },
       census: 98,
       view: '',
-      emptyBeds: {},
+      emptyBeds: { },
       assignment: [],
-      nurses: {},
+      nurses: { },
     };
   }
 
@@ -50,6 +50,7 @@ class App extends Component {
     });
   }
 
+  // all requests flow through the command line on pressing enter
   enter(event) {
     // function removeFrom(emptyBeds, beds) {
     //   return beds.filter(el => emptyBeds.indexOf(el) < 0);
@@ -89,6 +90,7 @@ class App extends Component {
     }
   }
 
+  // bed(s) becomes unoccupied
   discharge(value) {
     const arr = value.toUpperCase().split(' ');
     arr.shift();
@@ -100,6 +102,7 @@ class App extends Component {
     }).then(data => console.log('success: ', data));
   }
 
+  // bed(s) becomes occupied
   admit(value) {
     const arr = value.toUpperCase().split(' ');
     arr.shift();
@@ -110,6 +113,7 @@ class App extends Component {
     });
   }
 
+  // administrator assigns beds to a new shift of nurses
   assign() {
     const nurses = [...this.state.onduty];
     const post = $.ajax({
@@ -127,6 +131,7 @@ class App extends Component {
     this.setState(this.state);
   }
 
+  // a new nurse is hired
   add(value) {
     const input = value.split(' ');
     const obj = {
@@ -143,6 +148,7 @@ class App extends Component {
     });
   }
 
+  // a nurse is fired
   remove(value) {
     const input = value.split(' ');
     const obj = {
@@ -172,10 +178,10 @@ class App extends Component {
         '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B',
         '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
         onduty: [],
-        occupied: {},
+        occupied: { },
         census: 98,
         view: '',
-        emptyBeds: {},
+        emptyBeds: { },
         assignment: [],
         nurses: data,
       });
@@ -189,36 +195,36 @@ class App extends Component {
           <div>
             <Input enter={this.enter} />
             <Nurses
-              nurses={this.state.nurses}
-              select={this.select}
+              nurses={ this.state.nurses }
+              select={ this.select }
             />
           </div>
         );
       case 'assign':
         return (
           <div>
-            <Input enter={this.enter} />
-            <Assign assignment={this.state.assignment} nurses={this.state.onduty} />
+            <Input enter={ this.enter } />
+            <Assign assignment={ this.state.assignment } nurses={ this.state.onduty } />
           </div>
         );
       case 'display':
         return (
           <div>
-            <Input enter={this.enter} />
+            <Input enter={ this.enter } />
             <Display
-              emptyBeds={this.state.emptyBeds}
-              census={this.state.census}
+              emptyBeds={ this.state.emptyBeds }
+              census={ this.state.census }
             />
           </div>
         );
       default:
         return (
           <div>
-            <Input enter={this.enter} />
+            <Input enter={ this.enter } />
           </div>
         );
     }
   }
 }
 
-render(<App />, document.getElementById('content'));
+render(<App />, document.getElementById( 'content' ));

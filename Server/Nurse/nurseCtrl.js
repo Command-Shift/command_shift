@@ -70,9 +70,10 @@ function verifyNurse(req, res, next) {
 }
 
 function postAssignments(req,res){
-  Nurses.find({ first:req.body.first, last:req.body.last }, 'beds', function(err, beds){
+  Nurses.find({ first:req.body.first, last:req.body.last }, 'beds notes', function(err, beds){
     if (err) throw err;
+    console.log(beds);
     res.json(beds);
   })
 }
-module.exports = { index, show, add, remove, sendAssignment, clearAssignments };
+module.exports = { index, show, add, remove, sendAssignment, clearAssignments, verifyNurse, postAssignments};

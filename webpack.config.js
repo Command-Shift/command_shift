@@ -20,8 +20,11 @@ module.exports = {
           },
           {
             test: /\.jsx?$/,
-            loaders: ['babel?cacheDirectory'],
-            exclude: /(node_modules)/
+            loader: 'babel',
+            exclude: /(node_modules)/,
+            query: {
+              presets: ['es2015', 'react']
+            }
           }
       ]
   }
