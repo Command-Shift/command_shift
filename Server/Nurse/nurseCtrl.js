@@ -14,6 +14,7 @@ function show(req, res) {
   })
 }
 
+// create nurse doc in Nurses collection
 function add(req, res) {
   Nurses.create({first: req.body.first, last: req.body.last}, function(err, result){
     res.send('posted');

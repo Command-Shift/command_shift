@@ -17,7 +17,7 @@ app.get('/nurses', nurseCtrl.index);
 app.post('/nurse', nurseCtrl.add);
 app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
 app.post('/addBeds', bedCtrl.addBeds);
-app.post('/emptyBeds', bedCtrol.emptyBeds);
+app.post('/emptyBeds', bedCtrl.emptyBeds);
 app.post('/assign', nurseCtrl.assign);
 
 
