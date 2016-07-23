@@ -1,4 +1,4 @@
-html, body, h1, h2, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {
+html, body, h1, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {
   padding: 0;
   border: 0;
   margin: 0;
@@ -19,6 +19,7 @@ body {
 }
 
 h1 {
+  margin: 0 auto;
   font-size: 32px;
   z-index: 2;
 }
