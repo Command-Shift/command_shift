@@ -15,7 +15,22 @@ html, body, h1, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'
 body {
   padding-top: 80px;
   font-family: monospace, sans-serif;
-  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');
+  background-image: url('http://study.com/cimages/course-image/nursing-101-fundamentals-of-nursing_116114_large.jpg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;  
+}
+
+.title{
+  text-align: center;
+  -webkit-text-stroke: 1px 28a4f4;
+  text-shadow:
+  1px 1px 0 #28a4f4,
+  -1px -1px 0 #28a4f4,  
+  1px -1px 0 #28a4f4, 
+  -1px 1px 0 #28a4f4,
+  1px 1px 0 #28a4f4;
+  font-size: 48px;
 }
 
 h1 {
@@ -47,6 +62,40 @@ input#main{
 #content {
   width: 80%;
   margin: 0 auto;
+}
+
+.glossaryBlock{
+  display:block;
+  width:80%;
+  margin: auto;
+
+}
+
+.glossaryTitle{
+  margin: auto;
+  display:block;
+  width:80%;
+  text-align:center;
+  font-size: 30;
+  color: lightgrey;
+  -webkit-text-stroke: 1px 28a4f4;
+   text-shadow:
+       1px 1px 0 #28a4f4,
+     -1px -1px 0 #28a4f4,  
+      1px -1px 0 #28a4f4,
+      -1px 1px 0 #28a4f4,
+       1px 1px 0 #28a4f4;
+}
+.glossary{
+  display:block;
+  margin-left: auto;
+  margin-bottom: 30px;
+  padding: 5px;
+  width:100%;
+  border-radius: 5px;
+  border-color: 28a4f4;
+  background-color: lightgrey;
+  display: inline-block;
 }
 
 .run {
@@ -82,6 +131,13 @@ input#main{
 .name {
   font-size: 32px;
   margin-left: 10px;
+  -webkit-text-stroke: 1px 28a4f4;
+  text-shadow:
+  1px 1px 0 #28a4f4,
+  -1px -1px 0 #28a4f4,  
+  1px -1px 0 #28a4f4, 
+  -1px 1px 0 #28a4f4,
+  1px 1px 0 #28a4f4;
 }
 
 .container-2col {

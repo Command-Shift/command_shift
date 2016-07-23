@@ -215,8 +215,7 @@ class App extends Component {
       case 'nurses':
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
+            <Input enter={this.enter} glossaryVisible={this.state.glossaryVisible} onClick={this.onClick} />
             <Nurses
               nurses={ this.state.nurses }
               select={ this.select }
@@ -226,16 +225,14 @@ class App extends Component {
       case 'assign':
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
+            <Input enter={this.enter} glossaryVisible={this.state.glossaryVisible} onClick={this.onClick} />
             <Assign assignment={ this.state.assignment } nurses={ this.state.onduty } />
           </div>
         );
       case 'display':
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick } />
+            <Input enter={this.enter} glossaryVisible={this.state.glossaryVisible} onClick={this.onClick} />
             <Display
               emptyBeds={ this.state.emptyBeds }
               census={ this.state.census }
@@ -245,8 +242,7 @@ class App extends Component {
       default:
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
+            <Input enter={this.enter} glossaryVisible={this.state.glossaryVisible} onClick={this.onClick} />
           </div>
         );
     }
