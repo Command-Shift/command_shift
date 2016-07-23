@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 // <BedRow /> takes each object that was sent down from <AssignmentTable /> and returns an HTML table row with bed number and notes embedded (that are not null).
 var BedRow = React.createClass({
   render: function() {
@@ -11,14 +14,14 @@ var BedRow = React.createClass({
   }
 });
 
-// <AssignmentTable />  runs a forEach loop through the array and passes each object with 'BEDASSIGNMENTS' down to <BedRow /> and pushes each <BedRow /> to a 'rows' array.
+// <AssignmentTable />  runs a forEach loop through the array and passes each object down to <BedRow /> and pushes each <BedRow /> to a 'rows' array.
 // After <AssignmentTable /> pushes all the <BedRow /> elements into the 'rows' array it returns a table with the 'rows' array.
 // <BedAssignments /> renders <AssignmentTable /> table and ReactDOM.render attaches it to div with ID 'content'.
 var AssignmentTable = React.createClass({
   render: function() {
     var rows = [];
     this.props.assignments.forEach(function(assignment) {
-      rows.push(<BedRow assignment={assignment} key={assignment.id} />);
+      rows.push(<BedRow assignment={assignment} key={assignment.bed} />);
     }.bind(this));
     return (
       <table>
@@ -152,7 +155,8 @@ var LoginForm = React.createClass({
 
 //BedAssignments will ping '/getAssignments' route to get bed assignment array consisting of {bed: 'string', notes: 'string' || null} objects
 //Results will be rendered to 'content' in HTML
-ReactDOM.render(
+
+ ReactDOM.render(
   <BedAssignments url='/getAssignments' pollInterval={2000} />,
-  document.getElementById('content')
+  document.getElementById('content2')
 );

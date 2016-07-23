@@ -1,9 +1,14 @@
 module.exports = {
-  entry: "./Client/Admin_client/app.jsx",
+  entry: {
+    Admin: "./Client/Admin_client/app.jsx",
+    Nurse: "./Client/Nurse_client/app.jsx"
+  },
+  //entry: "./Client/Admin_client/app.jsx",
+  // entry: "./Client/Nurse_client/app.jsx",
   output: {
       path: __dirname + '/Build',
       publicPath: '/assets/',
-      filename: "bundle.js"
+      filename: "[name].bundle.js"
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
