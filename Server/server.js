@@ -18,14 +18,9 @@ app.post('/nurse', nurseCtrl.add);
 // app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
 app.post('/addBeds', bedCtrl.addBeds);
 app.post('/emptyBeds', bedCtrl.emptyBeds);
-<<<<<<< HEAD
-// app.post('/assign', nurseCtrl.assign);
-=======
+app.post('/assign', bedCtrl.getOccupiedBeds, bedCtrl.assign, nurseCtrl.sendAssignments)
 // app.post('/assign', nurseCtrl.assign);
 app.post('/populate', bedCtrl.populate);
-
->>>>>>> upstream/master
-
 
 app.listen(3000, function () {
   console.log('Express listening on port 3000');
