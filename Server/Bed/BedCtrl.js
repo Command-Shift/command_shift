@@ -1,3 +1,4 @@
+"use strict";
 const Beds = require('./bedMdl');
 
 // function changeBed(req,res,next){
@@ -54,7 +55,7 @@ function getOccupiedBeds(req, res, next) {
   });
 }
 
-// algorithm to assign beds to each nurse on-shift
+// algorithm to assign beds to each nurse on shift
 function assign(req, res, next) {
 
   function shuffle(arr) { // suffles arrays

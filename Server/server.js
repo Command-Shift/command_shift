@@ -23,7 +23,7 @@ app.post('/emptyBeds', bedCtrl.emptyBeds);
 app.post('/assign', bedCtrl.getOccupiedBeds, bedCtrl.assign, nurseCtrl.sendAssignment);
 app.post('/populate', bedCtrl.populate);
 app.post('/getAssignments', nurseCtrl.verifyNurse, cookieCtrl.setCookie, sessionCtrl.startSession, nurseCtrl.postAssignments);
-app.post('/clear', nurseCtrl.clearAssignment);
+app.post('/clear', nurseCtrl.clearAssignments);
 app.get('/getAssignments', sessionCtrl.isLoggedIn, nurseCtrl.postAssignments);
 
 app.listen(3000, () => {

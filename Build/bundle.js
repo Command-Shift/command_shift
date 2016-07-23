@@ -129,6 +129,9 @@
 	        _this2.setState({ nurses: data });
 	      });
 	    }
+
+	    // all requests flow through the command line on pressing enter
+
 	  }, {
 	    key: 'enter',
 	    value: function enter(event) {
@@ -171,6 +174,9 @@
 	        }
 	      }
 	    }
+
+	    // bed(s) becomes unoccupied
+
 	  }, {
 	    key: 'discharge',
 	    value: function discharge(value) {
@@ -185,6 +191,9 @@
 	        return console.log('success: ', data);
 	      });
 	    }
+
+	    // bed(s) becomes occupied
+
 	  }, {
 	    key: 'admit',
 	    value: function admit(value) {
@@ -196,6 +205,9 @@
 	        data: { addBeds: arr }
 	      });
 	    }
+
+	    // administrator assigns beds to a new shift of nurses
+
 	  }, {
 	    key: 'assign',
 	    value: function assign() {
@@ -217,6 +229,9 @@
 	      this.state.onduty.push(event.target.value);
 	      this.setState(this.state);
 	    }
+
+	    // a new nurse is hired
+
 	  }, {
 	    key: 'add',
 	    value: function add(value) {
@@ -236,6 +251,9 @@
 	        _this4.refresh();
 	      });
 	    }
+
+	    // a nurse is fired
+
 	  }, {
 	    key: 'remove',
 	    value: function remove(value) {
