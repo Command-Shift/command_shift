@@ -1,3 +1,4 @@
 node_modules
 npm-debug.log
-Build/bundle.js
+Build/Admin.bundle.js
+Build/Nurse.bundle.js

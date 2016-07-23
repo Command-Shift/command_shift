@@ -231,8 +231,8 @@ class App extends Component {
       case 'nurses':
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
@@ -245,8 +245,8 @@ class App extends Component {
       case 'assign':
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
@@ -259,8 +259,8 @@ class App extends Component {
       case 'display':
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
@@ -273,8 +273,8 @@ class App extends Component {
       default:
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
