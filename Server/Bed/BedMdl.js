@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-mongoose.connect('mongodb://localhost/db');
+// mongoose.connect('mongodb://localhost/db');
 
 const bedSchema = new Schema({
   'bed': String,
-  'status': {type: boolean, default: true}
+  'status': {type: Boolean, default: true},
   'notes': {type: String, default: null}
 });
 

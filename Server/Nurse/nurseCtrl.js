@@ -22,7 +22,6 @@ function add(req, res) {
 }
 
 function remove(req, res) {
-  console.log(req.body.first, req.body.last);
   Nurses.remove({first: req.body.first, last: req.body.last}, function(err, result) {
     res.send('deleted');
   })
@@ -42,9 +41,9 @@ function assign(req, res, next){
   shift(nurses, beds)
 }
 
-function shift(nurses, beds){
-  nurses.forEach(function(nurse, index){
-    Nurses.update({first:,last:}, {$set: beds[index]})
-  })
-}
-module.exports = { index, show, post, remove };
+// function shift(nurses, beds){
+//   nurses.forEach(function(nurse, index){
+//     Nurses.update({first:last:}, {$set: beds[index]})
+//   })
+// }
+module.exports = { index, show, add, remove };

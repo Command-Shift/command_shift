@@ -6,7 +6,7 @@ const nurseCtrl = require('./Nurse/nurseCtrl');
 const bedCtrl = require('./Bed/bedCtrl');
 
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static('public'));
+app.use(express.static('Build'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/Build/index.html');
@@ -15,10 +15,16 @@ app.get('/', (req, res) => {
 app.delete('/nurse', nurseCtrl.remove);
 app.get('/nurses', nurseCtrl.index);
 app.post('/nurse', nurseCtrl.add);
-app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
+// app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
 app.post('/addBeds', bedCtrl.addBeds);
 app.post('/emptyBeds', bedCtrl.emptyBeds);
-app.post('/assign', nurseCtrl.assign);
+<<<<<<< HEAD
+// app.post('/assign', nurseCtrl.assign);
+=======
+// app.post('/assign', nurseCtrl.assign);
+app.post('/populate', bedCtrl.populate);
+
+>>>>>>> upstream/master
 
 
 app.listen(3000, function () {
