@@ -37,4 +37,67 @@ function populate(req, res) {
   });
 }
 
-module.exports = {addBeds, emptyBeds, populate};
+function assign(req, res, next) {
+  // assign logic
+  const occupied = [...req.body.occupied];
+  const census = occupied.length;
+  let assignment = [];
+  if (census % nurses.length === 0) {
+    // even spread
+    const patientsPer = census / nurses.length;
+    let j = 0;
+    let k = patientsPer;
+
+    for (let i = 0; i < nurses.length; i++) {
+      assignment.push(occupied.slice(j, k));
+      j += patientsPer;
+      k += patientsPer;
+    }
+
+  } else {
+    // uneven spread
+    const occupied = [...this.state.occupied];
+    const census = occupied.length;
+    const nurses = [...this.state.onduty];
+    const longRuns = census % nurses.length;
+    const shortRuns = nurses.length - census % nurses.length;
+    const longPatientsPer = Math.floor(census / nurses.length) + 1;
+    const shortPatientsPer = Math.floor(census / nurses.length);
+    const spread = randomSpread([shortRuns, shortPatientsPer, longRuns, longPatientsPer]);
+
+    for (let i = 0; i < nurses.length; i++) {
+      assignment.push(occupied.splice(0, spread.shift()));
+    }
+  }
+
+  req.body.assignment = assignment;
+
+  function randomSpread(arr) {
+    let arr1 = [];
+    let arr2 = [];
+    let res = [];
+    for (let i = 0; i < arr[0]; i++) {
+      arr1.push(arr[1]);
+    }
+    for (let i = 0; i < arr[2]; i++) {
+      arr2.push(arr[3])
+    }
+    res = arr1.concat(arr2);
+    shuffle(res);
+    return res;
+  }
+
+  function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+      j = Math.floor(Math.random() * i);
+      x = a[i - 1];
+      a[i - 1] = a[j];
+      a[j] = x;
+    }
+  }
+  
+  next();
+}
+
+module.exports = {addBeds, emptyBeds, populate, assign};
