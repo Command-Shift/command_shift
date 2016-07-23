@@ -15,8 +15,8 @@ const Nurses = require('../Nurse/nurseCtrl');
 
 // one-time instantiating and populating of all hospital beds
 function populate(req, res) {
-  const arr = req.body.beds.map( el => {
-    return {'bed': el};
+  const arr = req.body.beds.map(el => {
+    return { bed: el };
   });
   Beds.create(arr, function(err, result) {
     res.send('boohyah!!');
@@ -43,51 +43,26 @@ function emptyBeds(req,res){
 
 // query beds DB for all occupied beds, sent to the shift generating middleware algorithm
 function getOccupiedBeds(req,res,next){
-	Beds.find({status:true}, 'bed', function(err, beds){
+	Beds.find({ status: true }, 'bed', function(err, beds){
 		if (err) throw err;
-		console.log(beds);
-		req.body.occupied = beds;
+		const arr = beds.map(el => el.bed);
+    console.log(arr);
+		req.body.occupied = arr;
 		next();
 	});
 }
 
-<<<<<<< HEAD
 function assign(req, res, next) {
-  // assign logic
-  const occupied = [...req.body.occupied];
-  const census = occupied.length;
-  let assignment = [];
-  if (census % nurses.length === 0) {
-    // even spread
-    const patientsPer = census / nurses.length;
-    let j = 0;
-    let k = patientsPer;
-
-    for (let i = 0; i < nurses.length; i++) {
-      assignment.push(occupied.slice(j, k));
-      j += patientsPer;
-      k += patientsPer;
-    }
-
-  } else {
-    // uneven spread
-    const occupied = [...this.state.occupied];
-    const census = occupied.length;
-    const nurses = [...this.state.onduty];
-    const longRuns = census % nurses.length;
-    const shortRuns = nurses.length - census % nurses.length;
-    const longPatientsPer = Math.floor(census / nurses.length) + 1;
-    const shortPatientsPer = Math.floor(census / nurses.length);
-    const spread = randomSpread([shortRuns, shortPatientsPer, longRuns, longPatientsPer]);
-
-    for (let i = 0; i < nurses.length; i++) {
-      assignment.push(occupied.splice(0, spread.shift()));
+  function shuffle(a) { // suffles arrays
+    var j, x, i;
+    for (i = a.length; i; i--) {
+      j = Math.floor(Math.random() * i);
+      x = a[i - 1];
+      a[i - 1] = a[j];
+      a[j] = x;
     }
   }
-
-  req.body.assignment = assignment;
-
-  function randomSpread(arr) {
+  function randomSpread(arr) { // randomize spread
     let arr1 = [];
     let arr2 = [];
     let res = [];
@@ -101,18 +76,37 @@ function assign(req, res, next) {
     shuffle(res);
     return res;
   }
+  // assign algorithm
+  const occupied = [...req.body.occupied];
+  const nurses = req.body.onDuty;
+  const census = occupied.length;
+  const assignment = [];
+  if (census % nurses.length === 0) {
+    // even spread
+    const patientsPer = census / nurses.length;
+    let j = 0;
+    let k = patientsPer;
 
-  function shuffle(a) {
-    var j, x, i;
-    for (i = a.length; i; i--) {
-      j = Math.floor(Math.random() * i);
-      x = a[i - 1];
-      a[i - 1] = a[j];
-      a[j] = x;
+    for (let i = 0; i < nurses.length; i++) {
+      assignment.push(occupied.slice(j, k));
+      j += patientsPer;
+      k += patientsPer;
+    }
+  } else {
+    // uneven spread
+    const longRuns = census % nurses.length;
+    const shortRuns = nurses.length - census % nurses.length;
+    const longPatientsPer = Math.floor(census / nurses.length) + 1;
+    const shortPatientsPer = Math.floor(census / nurses.length);
+    const spread = randomSpread([shortRuns, shortPatientsPer, longRuns, longPatientsPer]);
+
+    for (let i = 0; i < nurses.length; i++) {
+      assignment.push(occupied.splice(0, spread.shift()));
     }
   }
+  req.body.assignment = assignment;
 
   next();
 }
 
-module.exports = {addBeds, emptyBeds, populate, assign};
+module.exports = { addBeds, emptyBeds, populate, assign, getOccupiedBeds };
