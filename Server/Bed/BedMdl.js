@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const bedSchema = new Schema({
   bed: String,
   status: { type: Boolean, default: true },
-  notes: { type: String, default: null },
+  notes: [String],
 });
 
 const bed = mongoose.model('bed', bedSchema);
