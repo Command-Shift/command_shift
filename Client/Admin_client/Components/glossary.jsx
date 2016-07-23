@@ -4,7 +4,7 @@ export default class Glossary extends Component {
 
 	render() {
 		return (
-			<div className='glossary'>
+			<div className='glossary container'>
 	      <ul>
 	        <li>Display all nurses: Enter 'nurses'</li>
 	        <li>Assign beds to shift: Display nurses, select nurses on duty, enter 'assign'</li>

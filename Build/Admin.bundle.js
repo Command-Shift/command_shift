@@ -119,7 +119,7 @@
 	      emptyBeds: [],
 	      assignment: [],
 	      nurses: {},
-	      glossaryVisible: true,
+	      glossaryVisible: false,
 	      view: ''
 	    };
 	    return _this;
@@ -132,8 +132,13 @@
 	    }
 	  }, {
 	    key: 'refresh',
-	    value: function refresh() {
-	      var obj = {};
+	    value: function refresh(str) {
+	      var _this2 = this;
+
+	      if (!str) str = '';
+	      var obj = {
+	        view: str
+	      };
 	      var nQuery = $.get('/nurses');
 	      var ocbQuery = $.get('/occupiedBeds');
 	      var ebQuery = $.get('/emptyBeds');
@@ -145,12 +150,12 @@
 	        obj.nurses = res;
 	      });
 	      ocbQuery.then(function (data) {
-	        obj.occupied = data.occupied;
+	        obj.occupied = data;
 	      });
 	      ebQuery.then(function (data) {
-	        obj.emptyBeds = data.emptyBeds;
+	        obj.emptyBeds = data;
+	        _this2.setState(obj);
 	      });
-	      this.setState(obj);
 	    }
 
 	    // all requests flow through the command line on pressing enter
@@ -222,12 +227,16 @@
 	  }, {
 	    key: 'discharge',
 	    value: function discharge(value) {
+	      var _this3 = this;
+
 	      var arr = value.toUpperCase().split(' ');
 	      arr.shift();
 	      $.ajax({
 	        method: 'POST',
 	        url: '/emptyBeds',
 	        data: { emptyBeds: arr }
+	      }).then(function () {
+	        _this3.refresh('display');
 	      });
 	    }
 
@@ -236,12 +245,16 @@
 	  }, {
 	    key: 'admit',
 	    value: function admit(value) {
+	      var _this4 = this;
+
 	      var arr = value.toUpperCase().split(' ');
 	      arr.shift();
 	      $.ajax({
 	        method: 'POST',
 	        url: '/addBeds',
 	        data: { addBeds: arr }
+	      }).then(function () {
+	        _this4.refresh('display');
 	      });
 	    }
 
@@ -250,7 +263,7 @@
 	  }, {
 	    key: 'assign',
 	    value: function assign() {
-	      var _this2 = this;
+	      var _this5 = this;
 
 	      var nurses = [].concat(_toConsumableArray(this.state.onduty));
 	      var post = $.ajax({
@@ -259,7 +272,7 @@
 	        data: { onDuty: nurses }
 	      });
 	      post.then(function (data) {
-	        _this2.setState({ onduty: data.onDuty, assignment: data.assignment, view: 'assign' });
+	        _this5.setState({ onduty: data.onDuty, assignment: data.assignment, view: 'assign' });
 	      });
 	    }
 	  }, {
@@ -274,7 +287,7 @@
 	  }, {
 	    key: 'add',
 	    value: function add(value) {
-	      var _this3 = this;
+	      var _this6 = this;
 
 	      var input = value.split(' ');
 	      var obj = {
@@ -287,7 +300,7 @@
 	        data: obj
 	      });
 	      post.then(function () {
-	        _this3.refresh();
+	        _this6.refresh();
 	      });
 	    }
 
@@ -296,7 +309,7 @@
 	  }, {
 	    key: 'remove',
 	    value: function remove(value) {
-	      var _this4 = this;
+	      var _this7 = this;
 
 	      var input = value.split(' ');
 	      var obj = {
@@ -309,16 +322,16 @@
 	        data: obj
 	      });
 	      post.then(function () {
-	        _this4.refresh();
+	        _this7.refresh();
 	      });
 	    }
 	  }, {
 	    key: 'reset',
 	    value: function reset() {
-	      var _this5 = this;
+	      var _this8 = this;
 
 	      $.get('/nurses').then(function (data) {
-	        _this5.setState({
+	        _this8.setState({
 	          beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
 	          onduty: [],
 	          occupied: [],
@@ -21603,12 +21616,12 @@
 	            { className: "nurse", key: i },
 	            _react2.default.createElement("input", {
 	              type: "checkbox",
-	              value: el.first + ' ' + el.last,
+	              value: el,
 	              onChange: _this2.props.select }),
 	            _react2.default.createElement(
 	              "span",
 	              { className: "name" },
-	              el.first + ' ' + el.last
+	              el
 	            )
 	          );
 	        })
@@ -21725,16 +21738,19 @@
 
 	  _createClass(Display, [{
 	    key: "render",
+
+	    // props emptyBeds, occupied
 	    value: function render() {
+	      var census = this.props.occupied.length;
 	      return _react2.default.createElement(
 	        "div",
 	        { className: "container" },
 	        _react2.default.createElement(
 	          "div",
-	          { className: "container-2col" },
+	          { className: "container-left" },
 	          _react2.default.createElement(
-	            "h2",
-	            null,
+	            "div",
+	            { className: "header" },
 	            "Today's empty beds:"
 	          ),
 	          this.props.emptyBeds.map(function (el, i) {
@@ -21747,16 +21763,17 @@
 	        ),
 	        _react2.default.createElement(
 	          "div",
-	          { className: "container-2col" },
+	          { className: "container-right" },
 	          _react2.default.createElement(
-	            "h2",
-	            null,
-	            "Today's Census: ",
-	            _react2.default.createElement(
-	              "span",
-	              { id: "census" },
-	              this.props.census
-	            )
+	            "div",
+	            { className: "header" },
+	            "Census:"
+	          ),
+	          " ",
+	          _react2.default.createElement(
+	            "span",
+	            { className: "large-font" },
+	            census
 	          )
 	        )
 	      );
@@ -21806,7 +21823,7 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'glossary' },
+					{ className: 'glossary container' },
 					_react2.default.createElement(
 						'ul',
 						null,
@@ -21897,10 +21914,10 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'container' },
 	        _react2.default.createElement(
 	          'div',
-	          { style: { fontSize: 24 }, onClick: this.props.onClick },
+	          { style: { fontSize: 24 }, onClick: this.props.onClick, className: 'right third' },
 	          'Glossary',
 	          _react2.default.createElement(
 	            'span',
@@ -21953,7 +21970,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, h1, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {\n  padding: 0;\n  border: 0;\n  margin: 0;\n  font-size: 100%;\n  font: inherit;\n  box-sizing: border-box;\n  list-style: none;\n}\n\n:focus {\n  outline: 0;\n}\n\nbody {\n  padding-top: 80px;\n  font-family: monospace, sans-serif;\n  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');\n}\n\nh1 {\n  margin: 0 auto;\n  font-size: 32px;\n  z-index: 2;\n}\n\ninput[type=\"checkbox\"] {\n  width: 30px;\n  height: 30px;\n  border-radius: 5px;\n}\n\ninput#main{\n  width: 80%;\n  display: block;\n  line-height: 1.5;\n  font-size: 23px;\n  margin: 30px auto;\n  border: 0;\n  outline: none;\n  background-color: lightgrey;\n  border-radius: 5px;\n  padding: 10px 0px 10px 25px;\n  z-index: 2;\n}\n\n#content {\n  width: 80%;\n  margin: 0 auto;\n}\n\n.run {\n  display: inline-block;\n  margin: 10px 0px 20px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.room {\n  font-size: 24px;\n  display: inline-block;\n  padding: 3px 10px 3px 10px;\n}\n\n.container-mul {\n  width: 80%;\n  margin: 10px auto;\n  display: flex;\n}\n\n.container {\n  width: 80%;\n  margin: 10px auto;\n}\n\n.nurse {\n  margin: 10px 0px 10px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.name {\n  font-size: 32px;\n  margin-left: 10px;\n}\n\n.container-2col {\n  width: 50%;\n  display: inline-block;\n  margin: 0 auto;\n}\n\n#census {\n  font-size: 36px;\n}\n\n.hide {\n  display: none;\n}\n\n.fade-in {\n  opacity:0;\n  -webkit-animation:fadeIn ease-in 1;\n  -moz-animation:fadeIn ease-in 1;\n  animation:fadeIn ease-in 1;\n\n  -webkit-animation-fill-mode:forwards;\n  -moz-animation-fill-mode:forwards;\n  animation-fill-mode:forwards;\n\n  -webkit-animation-duration:1s;\n  -moz-animation-duration:1s;\n  animation-duration:1s;\n}\n", ""]);
+	exports.push([module.id, "html, body, h1, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {\n  padding: 0;\n  border: 0;\n  margin: 0;\n  font-size: 100%;\n  font: inherit;\n  box-sizing: border-box;\n  list-style: none;\n}\n\n:focus {\n  outline: 0;\n}\n\nbody {\n  padding-top: 80px;\n  font-family: monospace, sans-serif;\n  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');\n}\n\nh1 {\n  margin: 0 auto;\n  font-size: 32px;\n  z-index: 2;\n}\n\ninput[type=\"checkbox\"] {\n  width: 30px;\n  height: 30px;\n  border-radius: 5px;\n}\n\ninput#main{\n  width: 80%;\n  display: block;\n  line-height: 1.5;\n  font-size: 23px;\n  margin: 30px auto;\n  border: 0;\n  outline: none;\n  background-color: lightgrey;\n  border-radius: 5px;\n  padding: 10px 0px 10px 25px;\n  z-index: 2;\n}\n\n#content {\n  width: 80%;\n  margin: 0 auto;\n}\n\n.run {\n  display: inline-block;\n  margin: 10px 0px 20px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.room {\n  font-size: 24px;\n  display: inline-block;\n  padding: 3px 10px 3px 10px;\n}\n\n.container-mul {\n  width: 80%;\n  margin: 10px auto;\n  display: flex;\n}\n\n.container {\n  width: 80%;\n  margin: 10px auto;\n}\n\n.nurse {\n  margin: 10px 0px 10px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.name {\n  font-size: 32px;\n  margin-left: auto;\n}\n\n.container-left {\n  width: 50%;\n  display: inline-block;\n  margin-right: auto;\n  padding: 25px 0px 25px 15px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.container-right {\n  width: 20%;\n  display: inline-block;\n  margin-left: 250px;\n  padding: 25px 0px 25px 58px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.large-font {\n  font-size: 36px;\n}\n\n.hide {\n  display: none;\n}\n\n.right {\n  margin-left: auto;\n}\n\n.third {\n  width: 30%;\n}\n", ""]);
 
 	// exports
 

@@ -81,16 +81,28 @@ input#main{
 
 .name {
   font-size: 32px;
-  margin-left: 10px;
+  margin-left: auto;
 }
 
-.container-2col {
+.container-left {
   width: 50%;
   display: inline-block;
-  margin: 0 auto;
+  margin-right: auto;
+  padding: 25px 0px 25px 15px;
+  background-color: lightgrey;
+  border-radius: 5px;
 }
 
-#census {
+.container-right {
+  width: 20%;
+  display: inline-block;
+  margin-left: 250px;
+  padding: 25px 0px 25px 58px;
+  background-color: lightgrey;
+  border-radius: 5px;
+}
+
+.large-font {
   font-size: 36px;
 }
 
@@ -98,17 +110,10 @@ input#main{
   display: none;
 }
 
-.fade-in {
-  opacity:0;
-  -webkit-animation:fadeIn ease-in 1;
-  -moz-animation:fadeIn ease-in 1;
-  animation:fadeIn ease-in 1;
+.right {
+  margin-left: auto;
+}
 
-  -webkit-animation-fill-mode:forwards;
-  -moz-animation-fill-mode:forwards;
-  animation-fill-mode:forwards;
-
-  -webkit-animation-duration:1s;
-  -moz-animation-duration:1s;
-  animation-duration:1s;
+.third {
+  width: 30%;
 }

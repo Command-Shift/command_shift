@@ -5,8 +5,8 @@ export default class GlossaryClick extends Component {
 
 	render() {
 		return (
-			<div>
-        <div style={{fontSize:24}} onClick={this.props.onClick}>
+			<div className="container">
+        <div style={{fontSize:24}} onClick={this.props.onClick} className="right third">
           Glossary<span style={{fontSize:12}}> (Click to hide/show)</span>
         </div>
         {

@@ -38,7 +38,7 @@ class App extends Component {
       emptyBeds: [],
       assignment: [],
       nurses: {},
-      glossaryVisible: true,
+      glossaryVisible: false,
       view: '',
     };
   }
@@ -47,8 +47,11 @@ class App extends Component {
     this.refresh();
   }
 
-  refresh() {
-    const obj = {};
+  refresh(str) {
+    if (!str) str = '';
+    const obj = {
+      view: str,
+    };
     const nQuery = $.get('/nurses');
     const ocbQuery = $.get('/occupiedBeds');
     const ebQuery = $.get('/emptyBeds');
@@ -60,12 +63,12 @@ class App extends Component {
       obj.nurses = res;
     });
     ocbQuery.then(data => {
-      obj.occupied = data.occupied;
+      obj.occupied = data;
     });
     ebQuery.then(data => {
-      obj.emptyBeds = data.emptyBeds;
+      obj.emptyBeds = data;
+      this.setState(obj);
     });
-    this.setState(obj);
   }
 
   // all requests flow through the command line on pressing enter
@@ -100,7 +103,7 @@ class App extends Component {
       } else if (value.slice(0, 4) === 'note') {
         event.target.value = '';
         this.addNote(value.slice(4));
-      }else{
+      } else {
         event.target.value = '';
         this.setState({ view: value });
       }
@@ -130,6 +133,8 @@ class App extends Component {
       method: 'POST',
       url: '/emptyBeds',
       data: { emptyBeds: arr },
+    }).then(() => {
+      this.refresh('display');
     });
   }
 
@@ -141,6 +146,8 @@ class App extends Component {
       method: 'POST',
       url: '/addBeds',
       data: { addBeds: arr },
+    }).then(() => {
+      this.refresh('display');
     });
   }
 
