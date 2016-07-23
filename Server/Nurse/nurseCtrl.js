@@ -1,7 +1,7 @@
 const Nurses = require('./nurseMdl');
 
 function index(req, res) {
-  Nurses.find({}, (err, nurses) => {
+  Nurses.find({ }, (err, nurses) => {
     if (!nurses) res.sendStatus(404);
     else res.json(nurses);
   });
@@ -54,7 +54,22 @@ function sendAssignment(req, res) {
 }
 
 function clearAssignments(req, res) {
-  Nurses.update({}, { $set: { beds: [] } }, (err, result) => result);
+  Nurses.update({ }, { $set: { beds: [] } }, (err, result) => result);
   res.send();
+}
+
+function verifyNurse(req, res, next) {
+  Nurse.findOne({ first: req.body.first, last: req.body.first}, function(err, nurse) {
+    if (err) throw err;
+    if (!user) res.send("Error! You don't know your own name.");
+    else next();
+  })
+}
+
+function postAssignments(req,res){
+  Nurses.find({ first:req.body.first, last:req.body.last }, 'beds', function(err, beds){
+    if (err) throw err;
+    res.json(beds);
+  })
 }
 module.exports = { index, show, add, remove, sendAssignment, clearAssignments };

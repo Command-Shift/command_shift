@@ -4,6 +4,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const nurseCtrl = require('./Nurse/nurseCtrl');
 const bedCtrl = require('./Bed/bedCtrl');
+const cookieCtrl = require('./Cookie/cookieCtrl');
+const sessionCtrl = require('./Session/sessionCtrl');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('Build'));
@@ -19,10 +21,10 @@ app.post('/nurse', nurseCtrl.add);
 app.post('/addBeds', bedCtrl.addBeds);
 app.post('/emptyBeds', bedCtrl.emptyBeds);
 app.post('/assign', bedCtrl.getOccupiedBeds, bedCtrl.assign, nurseCtrl.sendAssignment);
-// app.post('/assign', nurseCtrl.assign);
 app.post('/populate', bedCtrl.populate);
-app.post('/getAssignments', nurseCtrl.postAssignment);
+app.post('/getAssignments', nurseCtrl.verifyNurse, cookieCtrl.setCookie, sessionCtrl.startSession, nurseCtrl.postAssignments);
 app.post('/clear', nurseCtrl.clearAssignment);
+app.get('/getAssignments', sessionCtrl.isLoggedIn, nurseCtrl.postAssignments);
 
 app.listen(3000, () => {
   console.log('Express listening on port 3000');

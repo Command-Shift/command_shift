@@ -38,10 +38,14 @@ function emptyBeds(req,res){
   bedsToEmpty.forEach(bed => {
     Beds.update({ bed }, { $set: { status: false } });
   });
+  Beds.find({status:false}, 'bed', (err, beds) => {
+  	if (err) throw err;
+  	res.json(beds);
+  })
   res.sendStatus('Patients removed!');
 }
 
-// query beds DB for all occupied beds, sent to the shift generating middleware algorithm
+// query beds DB for all occupied beds, sent to the shift-generating middleware algorithm
 function getOccupiedBeds(req, res, next) {
   Beds.find({ status: true }, 'bed', (err, beds) => {
     if (err) throw err;
@@ -51,7 +55,9 @@ function getOccupiedBeds(req, res, next) {
   });
 }
 
+// algorithm to assign beds to each nurse on-shift
 function assign(req, res, next) {
+  
   function shuffle(arr) { // suffles arrays
     let j;
     let x;
@@ -64,6 +70,7 @@ function assign(req, res, next) {
       a[j] = x;
     }
   }
+  
   function randomSpread(arr) { // randomize spread
     let arr1 = [];
     let arr2 = [];
