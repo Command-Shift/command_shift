@@ -70,7 +70,7 @@
 
 	var _display2 = _interopRequireDefault(_display);
 
-	var _style = __webpack_require__(177);
+	var _style = __webpack_require__(179);
 
 	var _style2 = _interopRequireDefault(_style);
 
@@ -21711,16 +21711,18 @@
 	exports.default = Display;
 
 /***/ },
-/* 177 */
+/* 177 */,
+/* 178 */,
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(178);
+	var content = __webpack_require__(180);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(180)(content, {});
+	var update = __webpack_require__(182)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21737,10 +21739,10 @@
 	}
 
 /***/ },
-/* 178 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(179)();
+	exports = module.exports = __webpack_require__(181)();
 	// imports
 
 
@@ -21751,7 +21753,7 @@
 
 
 /***/ },
-/* 179 */
+/* 181 */
 /***/ function(module, exports) {
 
 	/*
@@ -21807,7 +21809,7 @@
 
 
 /***/ },
-/* 180 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
