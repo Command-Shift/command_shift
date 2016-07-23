@@ -70,7 +70,15 @@
 
 	var _display2 = _interopRequireDefault(_display);
 
-	var _style = __webpack_require__(177);
+	var _glossary = __webpack_require__(177);
+
+	var _glossary2 = _interopRequireDefault(_glossary);
+
+	var _glossaryClick = __webpack_require__(178);
+
+	var _glossaryClick2 = _interopRequireDefault(_glossaryClick);
+
+	var _style = __webpack_require__(179);
 
 	var _style2 = _interopRequireDefault(_style);
 
@@ -93,6 +101,7 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
 	    _this.enter = _this.enter.bind(_this);
+	    _this.onClick = _this.onClick.bind(_this);
 	    _this.refresh = _this.refresh.bind(_this);
 	    _this.select = _this.select.bind(_this);
 	    _this.reset = _this.reset.bind(_this);
@@ -101,6 +110,7 @@
 	    _this.remove = _this.remove.bind(_this);
 	    _this.admit = _this.admit.bind(_this);
 	    _this.discharge = _this.discharge.bind(_this);
+	    _this.addNote = _this.addNote.bind(_this);
 
 	    _this.state = {
 	      beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
@@ -110,7 +120,8 @@
 	      view: '',
 	      emptyBeds: {},
 	      assignment: [],
-	      nurses: {}
+	      nurses: {},
+	      glossaryVisible: true
 	    };
 	    return _this;
 	  }
@@ -168,11 +179,35 @@
 	        } else if (value.slice(0, 5) === 'admit') {
 	          event.target.value = '';
 	          this.admit(value);
+	        } else if (value.slice(0, 4) === 'note') {
+	          event.target.value = '';
+	          this.addNote(value.slice(4));
 	        } else {
 	          event.target.value = '';
 	          this.setState({ view: value });
 	        }
 	      }
+	    }
+
+	    // toggle admin glossary
+
+	  }, {
+	    key: 'onClick',
+	    value: function onClick() {
+	      this.setState({ glossaryVisible: !this.state.glossaryVisible });
+	    }
+	  }, {
+	    key: 'addNote',
+	    value: function addNote(value) {
+	      var bed = value.substr(0, value.indexOf(' '));
+	      var note = value.substr(value.indexOf(' ') + 1);
+	      $.ajax({
+	        method: 'POST',
+	        url: '/note',
+	        data: { bed: bed, note: note }
+	      }).then(function (data) {
+	        return console.log('note sent');
+	      });
 	    }
 
 	    // bed(s) becomes unoccupied
@@ -300,6 +335,7 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
+	            _react2.default.createElement(_glossaryClick2.default, { glossaryVisible: this.state.glossaryVisible, onClick: this.onClick }),
 	            _react2.default.createElement(_nurses2.default, {
 	              nurses: this.state.nurses,
 	              select: this.select
@@ -310,6 +346,7 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
+	            _react2.default.createElement(_glossaryClick2.default, { glossaryVisible: this.state.glossaryVisible, onClick: this.onClick }),
 	            _react2.default.createElement(_assign2.default, { assignment: this.state.assignment, nurses: this.state.onduty })
 	          );
 	        case 'display':
@@ -317,6 +354,7 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
+	            _react2.default.createElement(_glossaryClick2.default, { glossaryVisible: this.state.glossaryVisible, onClick: this.onClick }),
 	            _react2.default.createElement(_display2.default, {
 	              emptyBeds: this.state.emptyBeds,
 	              census: this.state.census
@@ -326,7 +364,8 @@
 	          return _react2.default.createElement(
 	            'div',
 	            null,
-	            _react2.default.createElement(_input2.default, { enter: this.enter })
+	            _react2.default.createElement(_input2.default, { enter: this.enter }),
+	            _react2.default.createElement(_glossaryClick2.default, { glossaryVisible: this.state.glossaryVisible, onClick: this.onClick })
 	          );
 	      }
 	    }
@@ -21714,13 +21753,163 @@
 /* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Glossary = function (_Component) {
+		_inherits(Glossary, _Component);
+
+		function Glossary() {
+			_classCallCheck(this, Glossary);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Glossary).apply(this, arguments));
+		}
+
+		_createClass(Glossary, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'glossary' },
+					_react2.default.createElement(
+						'ul',
+						null,
+						_react2.default.createElement(
+							'li',
+							null,
+							'Display all nurses: Enter \'nurses\''
+						),
+						_react2.default.createElement(
+							'li',
+							null,
+							'Assign beds to shift: Display nurses, select nurses on duty, enter \'assign\''
+						),
+						_react2.default.createElement(
+							'li',
+							null,
+							'Clear current shift assignments: Enter \'clear\''
+						),
+						_react2.default.createElement(
+							'li',
+							null,
+							'Admit patient(s): Enter \'admit [bed1 bed2 bed3...]\''
+						),
+						_react2.default.createElement(
+							'li',
+							null,
+							'Discharge patient(s): Enter \'discharge [bed1 bed2 bed3...]\''
+						),
+						_react2.default.createElement(
+							'li',
+							null,
+							'Add a nurse: Enter \'add [nurse name]\''
+						),
+						_react2.default.createElement(
+							'li',
+							null,
+							'Remove a nurse: Enter \'remove [nurse name]\''
+						)
+					)
+				);
+			}
+		}]);
+
+		return Glossary;
+	}(_react.Component);
+
+	exports.default = Glossary;
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _glossary = __webpack_require__(177);
+
+	var _glossary2 = _interopRequireDefault(_glossary);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var GlossaryClick = function (_Component) {
+	  _inherits(GlossaryClick, _Component);
+
+	  function GlossaryClick() {
+	    _classCallCheck(this, GlossaryClick);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GlossaryClick).apply(this, arguments));
+	  }
+
+	  _createClass(GlossaryClick, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          { style: { fontSize: 24 }, onClick: this.props.onClick },
+	          'Glossary',
+	          _react2.default.createElement(
+	            'span',
+	            { style: { fontSize: 12 } },
+	            ' (Click to hide/show)'
+	          )
+	        ),
+	        this.props.glossaryVisible ? _react2.default.createElement(_glossary2.default, null) : false
+	      );
+	    }
+	  }]);
+
+	  return GlossaryClick;
+	}(_react.Component);
+
+	exports.default = GlossaryClick;
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(178);
+	var content = __webpack_require__(180);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(180)(content, {});
+	var update = __webpack_require__(182)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21737,21 +21926,21 @@
 	}
 
 /***/ },
-/* 178 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(179)();
+	exports = module.exports = __webpack_require__(181)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "html, body, h1, h2, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {\n  padding: 0;\n  border: 0;\n  margin: 0;\n  font-size: 100%;\n  font: inherit;\n  box-sizing: border-box;\n  list-style: none;\n}\n\n:focus {\n  outline: 0;\n}\n\nbody {\n  padding-top: 80px;\n  font-family: monospace, sans-serif;\n  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');\n}\n\nh1 {\n  font-size: 32px;\n  z-index: 2;\n}\n\ninput[type=\"checkbox\"] {\n  width: 30px;\n  height: 30px;\n  border-radius: 5px;\n}\n\ninput#main{\n  width: 80%;\n  display: block;\n  line-height: 1.5;\n  font-size: 23px;\n  margin: 30px auto;\n  border: 0;\n  outline: none;\n  background-color: lightgrey;\n  border-radius: 5px;\n  padding: 10px 0px 10px 25px;\n  z-index: 2;\n}\n\n#content {\n  width: 80%;\n  margin: 0 auto;\n}\n\n.run {\n  display: inline-block;\n  margin: 10px 0px 20px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.room {\n  font-size: 24px;\n  display: inline-block;\n  padding: 3px 10px 3px 10px;\n}\n\n.container-mul {\n  width: 80%;\n  margin: 10px auto;\n  display: flex;\n}\n\n.container {\n  width: 80%;\n  margin: 10px auto;\n}\n\n.nurse {\n  margin: 10px 0px 10px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.name {\n  font-size: 32px;\n  margin-left: 10px;\n}\n\n.container-2col {\n  width: 50%;\n  display: inline-block;\n  margin: 0 auto;\n}\n\n#census {\n  font-size: 36px;\n}\n\n.hide {\n  display: none;\n}\n", ""]);
+	exports.push([module.id, "html, body, h1, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {\n  padding: 0;\n  border: 0;\n  margin: 0;\n  font-size: 100%;\n  font: inherit;\n  box-sizing: border-box;\n  list-style: none;\n}\n\n:focus {\n  outline: 0;\n}\n\nbody {\n  padding-top: 80px;\n  font-family: monospace, sans-serif;\n  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');\n}\n\nh1 {\n  margin: 0 auto;\n  font-size: 32px;\n  z-index: 2;\n}\n\ninput[type=\"checkbox\"] {\n  width: 30px;\n  height: 30px;\n  border-radius: 5px;\n}\n\ninput#main{\n  width: 80%;\n  display: block;\n  line-height: 1.5;\n  font-size: 23px;\n  margin: 30px auto;\n  border: 0;\n  outline: none;\n  background-color: lightgrey;\n  border-radius: 5px;\n  padding: 10px 0px 10px 25px;\n  z-index: 2;\n}\n\n#content {\n  width: 80%;\n  margin: 0 auto;\n}\n\n.run {\n  display: inline-block;\n  margin: 10px 0px 20px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.room {\n  font-size: 24px;\n  display: inline-block;\n  padding: 3px 10px 3px 10px;\n}\n\n.container-mul {\n  width: 80%;\n  margin: 10px auto;\n  display: flex;\n}\n\n.container {\n  width: 80%;\n  margin: 10px auto;\n}\n\n.nurse {\n  margin: 10px 0px 10px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.name {\n  font-size: 32px;\n  margin-left: 10px;\n}\n\n.container-2col {\n  width: 50%;\n  display: inline-block;\n  margin: 0 auto;\n}\n\n#census {\n  font-size: 36px;\n}\n\n.hide {\n  display: none;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 179 */
+/* 181 */
 /***/ function(module, exports) {
 
 	/*
@@ -21807,7 +21996,7 @@
 
 
 /***/ },
-/* 180 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*

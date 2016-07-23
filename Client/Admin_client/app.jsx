@@ -4,13 +4,15 @@ import Assign from './Components/assign.jsx';
 import Nurses from './Components/nurses.jsx';
 import Input from './Components/input.jsx';
 import Display from './Components/display.jsx';
-
+import Glossary from './Components/glossary.jsx';
+import GlossaryClick from './Components/glossaryClick.jsx';
 import style from './Stylesheet/style.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.enter = this.enter.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.refresh = this.refresh.bind(this);
     this.select = this.select.bind(this);
     this.reset = this.reset.bind(this);
@@ -19,6 +21,7 @@ class App extends Component {
     this.remove = this.remove.bind(this);
     this.admit = this.admit.bind(this);
     this.discharge = this.discharge.bind(this);
+    this.addNote = this.addNote.bind(this);
 
     this.state = {
       beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A',
@@ -37,6 +40,7 @@ class App extends Component {
       emptyBeds: { },
       assignment: [],
       nurses: { },
+      glossaryVisible: true
     };
   }
 
@@ -83,11 +87,29 @@ class App extends Component {
       } else if (value.slice(0, 5) === 'admit') {
         event.target.value = '';
         this.admit(value);
-      } else {
+      } else if(value.slice(0,4) === 'note'){
+        event.target.value = '';
+        this.addNote(value.slice(4));
+      }else{
         event.target.value = '';
         this.setState({ view: value });
       }
     }
+  }
+
+  // toggle admin glossary
+  onClick() {
+    this.setState({glossaryVisible: !this.state.glossaryVisible});
+  }
+
+  addNote(value) {
+    const bed = value.substr(0, value.indexOf(' '));
+    const note = value.substr(value.indexOf(' ')+1);
+    $.ajax({
+      method: 'POST',
+      url: '/note',
+      data: { bed: bed, note: note},
+    }).then(data => console.log('note sent'));
   }
 
   // bed(s) becomes unoccupied
@@ -193,7 +215,8 @@ class App extends Component {
       case 'nurses':
         return (
           <div>
-            <Input enter={this.enter} />
+            <Input enter={ this.enter } />
+            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
             <Nurses
               nurses={ this.state.nurses }
               select={ this.select }
@@ -204,6 +227,7 @@ class App extends Component {
         return (
           <div>
             <Input enter={ this.enter } />
+            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
             <Assign assignment={ this.state.assignment } nurses={ this.state.onduty } />
           </div>
         );
@@ -211,6 +235,7 @@ class App extends Component {
         return (
           <div>
             <Input enter={ this.enter } />
+            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick } />
             <Display
               emptyBeds={ this.state.emptyBeds }
               census={ this.state.census }
@@ -221,6 +246,7 @@ class App extends Component {
         return (
           <div>
             <Input enter={ this.enter } />
+            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
           </div>
         );
     }
