@@ -34,7 +34,7 @@ var AssignmentTable = React.createClass({
   }
 });
 
-//BedAssignments will load assignments from server using '/assignment' url route via ajax get request.
+//BedAssignments will load assignments from server using '/getAssignments' url route via ajax get request.
 //If the get request is successful, state will be updated for assignments data and the data will be passed down to <AssignmentTable />
 //BedAssignemtns also has a handleLoginSubmit function to submit ajax post request which is passed down to <LoginForm />
 
@@ -106,7 +106,7 @@ var BedAssignments = React.createClass({
 });
 
 //LoginForm is used to collect the nurse's information to get their bed assignments.
-//It collects first and last name and send an object {first: 'string', last: 'string'} as a post request to '/assignemnts' route
+//It collects first and last name and send an object {first: 'string', last: 'string'} as a post request to '/getAssignments' route
 var LoginForm = React.createClass({
   getInitialState: function() {
     return {first: '', last: ''};
@@ -150,9 +150,9 @@ var LoginForm = React.createClass({
 });
 
 
-//BedAssignments will ping '/assignments' route to get bed assignment array consisting of {bed: 'string', notes: 'string' || null} objects
+//BedAssignments will ping '/getAssignments' route to get bed assignment array consisting of {bed: 'string', notes: 'string' || null} objects
 //Results will be rendered to 'content' in HTML
 ReactDOM.render(
-  <BedAssignments url='/assignments' pollInterval={2000} />,
+  <BedAssignments url='/getAssignments' pollInterval={2000} />,
   document.getElementById('content')
 );
