@@ -133,6 +133,7 @@
 	        var value = event.target.value;
 
 	        if (value.slice(0, 3) === 'add') {
+	          console.log('add');
 	          value = value.split(' ');
 	          var obj = {
 	            first: value[1],
@@ -152,6 +153,11 @@
 	          emptyBeds.shift();
 	          var occupied = remove(emptyBeds, [].concat(_toConsumableArray(this.state.beds)));
 	          var census = occupied.length;
+	          var _post = $.ajax({
+	            method: 'POST',
+	            url: '/emptyBeds',
+	            data: emptyBeds
+	          });
 	          this.setState({
 	            occupied: occupied,
 	            census: census,
@@ -171,16 +177,22 @@
 	            first: value[1],
 	            last: value[2]
 	          };
-	          console.log(_obj);
-	          var _post = $.ajax({
+	          var _post2 = $.ajax({
 	            method: 'DELETE',
 	            url: '/nurse',
 	            data: _obj
 	          });
-	          _post.then(function () {
+	          _post2.then(function () {
 	            _this3.refresh();
 	          });
 	          event.target.value = '';
+	        } else if (value === 'populate') {
+	          var beds = { beds: this.state.beds };
+	          $.ajax({
+	            method: 'POST',
+	            url: '/populate',
+	            data: beds
+	          });
 	        } else {
 	          event.target.value = '';
 	          this.setState({ view: value });
@@ -227,7 +239,6 @@
 	          assignment.push(_occupied.splice(0, spread.shift()));
 	        }
 	      }
-
 	      this.setState({ assignment: assignment, view: 'assign' });
 
 	      function randomSpread(arr) {
@@ -21731,7 +21742,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, h1, h2, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {\n  padding: 0;\n  border: 0;\n  margin: 0;\n  font-size: 100%;\n  font: inherit;\n  box-sizing: border-box;\n  list-style: none;\n}\n\n:focus {\n  outline: 0;\n}\n\nbody {\n  padding-top: 80px;\n  font-family: monospace, sans-serif;\n  /*background-color: while;*/\n  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');\n}\n\nh1 {\n  font-size: 32px;\n  z-index: 2;\n}\n\ninput[type=\"checkbox\"] {\n  width: 30px;\n  height: 30px;\n  border-radius: 5px;\n}\n\ninput#main{\n  width: 80%;\n  display: block;\n  line-height: 1.5;\n  font-size: 23px;\n  margin: 30px auto;\n  border: 0;\n  outline: none;\n  background-color: lightgrey;\n  border-radius: 5px;\n  padding: 10px 0px 10px 25px;\n  z-index: 2;\n}\n\n#content {\n  width: 80%;\n  margin: 0 auto;\n}\n\n.run {\n  display: inline-block;\n  margin: 10px 0px 20px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.room {\n  font-size: 24px;\n  display: inline-block;\n  padding: 3px 10px 3px 10px;\n}\n\n.container-mul {\n  width: 80%;\n  margin: 10px auto;\n  display: flex;\n}\n\n.container {\n  width: 80%;\n  margin: 10px auto;\n}\n\n.nurse {\n  margin: 10px 0px 10px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.name {\n  font-size: 32px;\n  margin-left: 10px;\n}\n\n.container-2col {\n  width: 50%;\n  display: inline-block;\n  margin: 0 auto;\n}\n\n#census {\n  font-size: 36px;\n}\n\n.hide {\n  display: none;\n}\n", ""]);
+	exports.push([module.id, "html, body, h1, h2, h3, h4, p, ol, ul, li, a, div, span, button, input[type='button'] {\n  padding: 0;\n  border: 0;\n  margin: 0;\n  font-size: 100%;\n  font: inherit;\n  box-sizing: border-box;\n  list-style: none;\n}\n\n:focus {\n  outline: 0;\n}\n\nbody {\n  padding-top: 80px;\n  font-family: monospace, sans-serif;\n  background-image: url('http://www.canadianimmigration.com/media/Canadian-Immigration-Nurses.jpg');\n}\n\nh1 {\n  font-size: 32px;\n  z-index: 2;\n}\n\ninput[type=\"checkbox\"] {\n  width: 30px;\n  height: 30px;\n  border-radius: 5px;\n}\n\ninput#main{\n  width: 80%;\n  display: block;\n  line-height: 1.5;\n  font-size: 23px;\n  margin: 30px auto;\n  border: 0;\n  outline: none;\n  background-color: lightgrey;\n  border-radius: 5px;\n  padding: 10px 0px 10px 25px;\n  z-index: 2;\n}\n\n#content {\n  width: 80%;\n  margin: 0 auto;\n}\n\n.run {\n  display: inline-block;\n  margin: 10px 0px 20px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.room {\n  font-size: 24px;\n  display: inline-block;\n  padding: 3px 10px 3px 10px;\n}\n\n.container-mul {\n  width: 80%;\n  margin: 10px auto;\n  display: flex;\n}\n\n.container {\n  width: 80%;\n  margin: 10px auto;\n}\n\n.nurse {\n  margin: 10px 0px 10px 0px;\n  background-color: lightgrey;\n  border-radius: 5px;\n}\n\n.name {\n  font-size: 32px;\n  margin-left: 10px;\n}\n\n.container-2col {\n  width: 50%;\n  display: inline-block;\n  margin: 0 auto;\n}\n\n#census {\n  font-size: 36px;\n}\n\n.hide {\n  display: none;\n}\n", ""]);
 
 	// exports
 

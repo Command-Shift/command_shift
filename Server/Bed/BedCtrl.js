@@ -17,6 +17,7 @@ function addBeds(req, res){
 	var bedsToAdd = req.body.addBeds;
 	bedsToAdd.forEach(function(bed){
 		Beds.update({bed: bed}, {$set: { status: true }});
+  });
 }
 
 // remove a patient
@@ -27,4 +28,13 @@ function emptyBeds(req,res){
 	})
 }
 
-module.exports = {addBeds, emptyBeds };
+function populate(req, res) {
+  const arr = req.body.beds.map( el => {
+    return {'bed': el};
+  });
+  Beds.create(arr, function(err, result) {
+    res.send('boohyah!!');
+  });
+}
+
+module.exports = {addBeds, emptyBeds, populate};
