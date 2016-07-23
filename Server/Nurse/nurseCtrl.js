@@ -39,6 +39,10 @@ function remove(req, res) {
 function sendAssignment(req, res) {
   const shifts = req.body.assignment;
   const onDuty = req.body.onDuty;
+  const response = {
+    onDuty: req.body.onDuty,
+    assignment: req.body.assignment,
+  };
 
   onDuty.forEach((nurse, i) => {
     const name = nurse.split(' ');
@@ -49,8 +53,7 @@ function sendAssignment(req, res) {
       { $addToSet: { beds: { $each: shifts[i] } } },
       (err, result) => result);
   });
-  // res.json(req.body.assignment);
-  res.send('success');
+  res.send(response);
 }
 
 function clearAssignments(req, res) {

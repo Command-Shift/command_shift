@@ -99,6 +99,8 @@
 	    _this.assign = _this.assign.bind(_this);
 	    _this.add = _this.add.bind(_this);
 	    _this.remove = _this.remove.bind(_this);
+	    _this.admit = _this.admit.bind(_this);
+	    _this.discharge = _this.discharge.bind(_this);
 
 	    _this.state = {
 	      beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
@@ -130,35 +132,19 @@
 	  }, {
 	    key: 'enter',
 	    value: function enter(event) {
-	      function removeFrom(emptyBeds, beds) {
-	        return beds.filter(function (el) {
-	          return emptyBeds.indexOf(el) < 0;
-	        });
-	      }
+	      // function removeFrom(emptyBeds, beds) {
+	      //   return beds.filter(el => emptyBeds.indexOf(el) < 0);
+	      // }
 
 	      if (event.keyCode === 13) {
-	        // refactor to switch
 	        var value = event.target.value;
 	        if (value.slice(0, 3) === 'add') {
+	          // inserts a new nurse in db
 	          event.target.value = '';
 	          this.add(value);
-	        } else if (value.slice(0, 5) === 'empty') {
-	          var emptyBeds = value.toUpperCase().split(' ');
-	          emptyBeds.shift();
-	          var occupied = removeFrom(emptyBeds, [].concat(_toConsumableArray(this.state.beds)));
-	          var census = occupied.length;
-	          $.ajax({
-	            method: 'POST',
-	            url: '/emptyBeds',
-	            data: emptyBeds
-	          });
-	          this.setState({
-	            occupied: occupied,
-	            census: census,
-	            emptyBeds: emptyBeds,
-	            view: 'display'
-	          });
+	        } else if (value.slice(0, 9) === 'discharge') {
 	          event.target.value = '';
+	          this.discharge(value);
 	        } else if (value === 'clear') {
 	          event.target.value = '';
 	          this.reset();
@@ -176,6 +162,9 @@
 	            url: '/populate',
 	            data: beds
 	          });
+	        } else if (value.slice(0, 5) === 'admit') {
+	          event.target.value = '';
+	          this.admit(value);
 	        } else {
 	          event.target.value = '';
 	          this.setState({ view: value });
@@ -183,17 +172,43 @@
 	      }
 	    }
 	  }, {
+	    key: 'discharge',
+	    value: function discharge(value) {
+	      var arr = value.toUpperCase().split(' ');
+	      arr.shift();
+	      console.log('arr: ', arr);
+	      $.ajax({
+	        method: 'POST',
+	        url: '/emptyBeds',
+	        data: { emptyBeds: arr }
+	      }).then(function (data) {
+	        return console.log('success: ', data);
+	      });
+	    }
+	  }, {
+	    key: 'admit',
+	    value: function admit(value) {
+	      var arr = value.toUpperCase().split(' ');
+	      arr.shift();
+	      $.ajax({
+	        method: 'POST',
+	        url: '/addBeds',
+	        data: { addBeds: arr }
+	      });
+	    }
+	  }, {
 	    key: 'assign',
 	    value: function assign() {
 	      var _this3 = this;
 
 	      var nurses = [].concat(_toConsumableArray(this.state.onduty));
-	      $.ajax({
+	      var post = $.ajax({
 	        method: 'POST',
 	        url: '/assign',
 	        data: { onDuty: nurses }
-	      }).then(function (data) {
-	        _this3.setState({ onduty: nurses, occupied: data, view: 'assign' });
+	      });
+	      post.then(function (data) {
+	        _this3.setState({ onduty: data.onDuty, assignment: data.assignment, view: 'assign' });
 	      });
 	    }
 	  }, {
@@ -207,10 +222,10 @@
 	    value: function add(value) {
 	      var _this4 = this;
 
-	      value = value.split(' ');
+	      var input = value.split(' ');
 	      var obj = {
-	        first: value[1],
-	        last: value[2]
+	        first: input[1],
+	        last: input[2]
 	      };
 	      var post = $.ajax({
 	        method: 'POST',
@@ -226,10 +241,10 @@
 	    value: function remove(value) {
 	      var _this5 = this;
 
-	      value = value.split(' ');
+	      var input = value.split(' ');
 	      var obj = {
-	        first: value[1],
-	        last: value[2]
+	        first: input[1],
+	        last: input[2]
 	      };
 	      var post = $.ajax({
 	        method: 'DELETE',
@@ -269,7 +284,8 @@
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
 	            _react2.default.createElement(_nurses2.default, {
 	              nurses: this.state.nurses,
-	              select: this.select })
+	              select: this.select
+	            })
 	          );
 	        case 'assign':
 	          return _react2.default.createElement(
@@ -285,7 +301,8 @@
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
 	            _react2.default.createElement(_display2.default, {
 	              emptyBeds: this.state.emptyBeds,
-	              census: this.state.census })
+	              census: this.state.census
+	            })
 	          );
 	        default:
 	          return _react2.default.createElement(
@@ -21382,7 +21399,7 @@
 	        this.props.assignment.map(function (ar, i) {
 	          return _react2.default.createElement(
 	            'div',
-	            null,
+	            { className: 'assignment', key: i },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'header' },

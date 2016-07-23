@@ -1,5 +1,4 @@
 const Beds = require('./bedMdl');
-const Nurses = require('../Nurse/nurseCtrl');
 
 // function changeBed(req,res,next){
 // 	var oldBedNotes;
@@ -18,27 +17,27 @@ function populate(req, res) {
   const arr = req.body.beds.map(el => {
     return { bed: el };
   });
-  Beds.create(arr, function(err, result) {
-    res.send('boohyah!!');
+  Beds.create(arr, (err, result) => {
+    res.send(result);
   });
 }
 
 // add a patient to a bed
-function addBeds(req, res){
-	var bedsToAdd = req.body.addBeds;
-	bedsToAdd.forEach(function(bed){
-		Beds.update({bed: bed}, {$set: { status: true }});
-	});
-	res.sendStatus('Patients added!')
+function addBeds(req, res) {
+  const bedsToAdd = req.body.addBeds;
+  bedsToAdd.forEach(bed => {
+    Beds.update({ bed }, { $set: { status: true } });
+  });
+  res.send('Patients added!');
 }
 
 // remove a patient from a bed
-function emptyBeds(req,res){
-  let bedsToEmpty = req.body.emptyBeds;
+function emptyBeds(req, res) {
+  const bedsToEmpty = req.body.emptyBeds;
   bedsToEmpty.forEach(bed => {
     Beds.update({ bed }, { $set: { status: false } });
   });
-  res.sendStatus('Patients removed!');
+  res.send('Patients removed!');
 }
 
 // query beds DB for all occupied beds, sent to the shift generating middleware algorithm
@@ -65,18 +64,18 @@ function assign(req, res, next) {
     }
   }
   function randomSpread(arr) { // randomize spread
-    let arr1 = [];
-    let arr2 = [];
-    let res = [];
+    const arr1 = [];
+    const arr2 = [];
+    let result = [];
     for (let i = 0; i < arr[0]; i++) {
       arr1.push(arr[1]);
     }
     for (let i = 0; i < arr[2]; i++) {
-      arr2.push(arr[3])
+      arr2.push(arr[3]);
     }
-    res = arr1.concat(arr2);
-    shuffle(res);
-    return res;
+    result = arr1.concat(arr2);
+    shuffle(result);
+    return result;
   }
   // assign algorithm
   const occupied = [...req.body.occupied];
