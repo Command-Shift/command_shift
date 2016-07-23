@@ -26,20 +26,23 @@ function populate(req, res) {
 function addBeds(req, res) {
   const bedsToAdd = req.body.addBeds;
   bedsToAdd.forEach(bed => {
-    Beds.update({ bed }, { $set: { status: true } });
+    Beds.update({ bed }, { $set: { status: true } }, (err, result) => result);
   });
   res.send('Patients added!');
+}
+
+function addNote(req, res) {
+  const bed = req.body.bed;
+  const note = req.body.note;
+  Beds.update({ bed }, { $addToSet: { notes: note } }, (err, result) => result);
+  res.send('Notes Added');
 }
 
 // remove a patient from a bed
 function emptyBeds(req, res) {
   const bedsToEmpty = req.body.emptyBeds;
   bedsToEmpty.forEach(bed => {
-    Beds.update({ bed }, { $set: { status: false } });
-  });
-  Beds.find({ status: false }, 'bed', (err, beds) => {
-    if (err) throw err;
-    res.json(beds);
+    Beds.update({ bed }, { $set: { status: false } }, (err, result) => result);
   });
   res.send('Patients removed!');
 }
@@ -54,9 +57,18 @@ function getOccupiedBeds(req, res, next) {
   });
 }
 
+function getEmptyBeds(req, res, next) {
+  Beds.find({ status: false }, 'bed', (err, beds) => {
+    if (err) throw err;
+    const arr = beds.map(el => el.bed);
+    req.body.emptyBeds = arr;
+    console.log(req.body.emptyBeds);
+    next();
+  });
+}
+
 // algorithm to assign beds to each nurse on-shift
 function assign(req, res, next) {
-
   function shuffle(arr) { // suffles arrays
     let j;
     let x;
@@ -117,4 +129,12 @@ function assign(req, res, next) {
   next();
 }
 
-module.exports = { addBeds, emptyBeds, populate, assign, getOccupiedBeds };
+module.exports = {
+  addBeds,
+  addNote,
+  emptyBeds,
+  populate,
+  assign,
+  getOccupiedBeds,
+  getEmptyBeds,
+};

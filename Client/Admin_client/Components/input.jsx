@@ -5,7 +5,7 @@ export default class Input extends Component {
   render() {
     return (
       <div>
-        <h1>CNA Assign ...</h1>
+        <h1>cmd-shift ...</h1>
         <div id="maininput">
           <input name="emptyBeds"
             type="text"

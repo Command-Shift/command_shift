@@ -105,12 +105,11 @@
 	    _this.state = {
 	      beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
 	      onduty: [],
-	      occupied: {},
-	      census: 98,
-	      view: '',
-	      emptyBeds: {},
+	      occupied: [],
+	      emptyBeds: [],
 	      assignment: [],
-	      nurses: {}
+	      nurses: {},
+	      view: ''
 	    };
 	    return _this;
 	  }
@@ -123,19 +122,28 @@
 	  }, {
 	    key: 'refresh',
 	    value: function refresh() {
-	      var _this2 = this;
-
-	      $.get('/nurses').then(function (data) {
-	        _this2.setState({ nurses: data });
+	      var obj = {};
+	      var nQuery = $.get('/nurses');
+	      var ocbQuery = $.get('/occupiedBeds');
+	      var ebQuery = $.get('/emptyBeds');
+	      nQuery.then(function (data) {
+	        var res = [];
+	        data.forEach(function (el) {
+	          res.push(el.first + ' ' + el.last);
+	        });
+	        obj.nurses = res;
 	      });
+	      ocbQuery.then(function (data) {
+	        obj.occupied = data.occupied;
+	      });
+	      ebQuery.then(function (data) {
+	        obj.emptyBeds = data.emptyBeds;
+	      });
+	      this.setState(obj);
 	    }
 	  }, {
 	    key: 'enter',
 	    value: function enter(event) {
-	      // function removeFrom(emptyBeds, beds) {
-	      //   return beds.filter(el => emptyBeds.indexOf(el) < 0);
-	      // }
-
 	      if (event.keyCode === 13) {
 	        var value = event.target.value;
 	        if (value.slice(0, 3) === 'add') {
@@ -146,8 +154,9 @@
 	          event.target.value = '';
 	          this.discharge(value);
 	        } else if (value === 'clear') {
+	          // turned off for now
 	          event.target.value = '';
-	          this.reset();
+	          this.refresh();
 	        } else if (value === 'assign') {
 	          event.target.value = '';
 	          this.assign();
@@ -176,13 +185,10 @@
 	    value: function discharge(value) {
 	      var arr = value.toUpperCase().split(' ');
 	      arr.shift();
-	      console.log('arr: ', arr);
 	      $.ajax({
 	        method: 'POST',
 	        url: '/emptyBeds',
 	        data: { emptyBeds: arr }
-	      }).then(function (data) {
-	        return console.log('success: ', data);
 	      });
 	    }
 	  }, {
@@ -199,7 +205,7 @@
 	  }, {
 	    key: 'assign',
 	    value: function assign() {
-	      var _this3 = this;
+	      var _this2 = this;
 
 	      var nurses = [].concat(_toConsumableArray(this.state.onduty));
 	      var post = $.ajax({
@@ -208,7 +214,7 @@
 	        data: { onDuty: nurses }
 	      });
 	      post.then(function (data) {
-	        _this3.setState({ onduty: data.onDuty, assignment: data.assignment, view: 'assign' });
+	        _this2.setState({ onduty: data.onDuty, assignment: data.assignment, view: 'assign' });
 	      });
 	    }
 	  }, {
@@ -220,7 +226,7 @@
 	  }, {
 	    key: 'add',
 	    value: function add(value) {
-	      var _this4 = this;
+	      var _this3 = this;
 
 	      var input = value.split(' ');
 	      var obj = {
@@ -233,13 +239,13 @@
 	        data: obj
 	      });
 	      post.then(function () {
-	        _this4.refresh();
+	        _this3.refresh();
 	      });
 	    }
 	  }, {
 	    key: 'remove',
 	    value: function remove(value) {
-	      var _this5 = this;
+	      var _this4 = this;
 
 	      var input = value.split(' ');
 	      var obj = {
@@ -252,20 +258,19 @@
 	        data: obj
 	      });
 	      post.then(function () {
-	        _this5.refresh();
+	        _this4.refresh();
 	      });
 	    }
 	  }, {
 	    key: 'reset',
 	    value: function reset() {
-	      var _this6 = this;
+	      var _this5 = this;
 
 	      $.get('/nurses').then(function (data) {
-	        _this6.setState({
+	        _this5.setState({
 	          beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
 	          onduty: [],
 	          occupied: {},
-	          census: 98,
 	          view: '',
 	          emptyBeds: {},
 	          assignment: [],
@@ -292,7 +297,10 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
-	            _react2.default.createElement(_assign2.default, { assignment: this.state.assignment, nurses: this.state.onduty })
+	            _react2.default.createElement(_assign2.default, {
+	              assignment: this.state.assignment,
+	              nurses: this.state.onduty
+	            })
 	          );
 	        case 'display':
 	          return _react2.default.createElement(
@@ -301,7 +309,7 @@
 	            _react2.default.createElement(_input2.default, { enter: this.enter }),
 	            _react2.default.createElement(_display2.default, {
 	              emptyBeds: this.state.emptyBeds,
-	              census: this.state.census
+	              occupied: this.state.occupied
 	            })
 	          );
 	        default:
@@ -21587,7 +21595,7 @@
 	        _react2.default.createElement(
 	          "h1",
 	          null,
-	          "CNA Assign ..."
+	          "cmd-shift ..."
 	        ),
 	        _react2.default.createElement(
 	          "div",

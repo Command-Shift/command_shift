@@ -31,12 +31,11 @@ class App extends Component {
       '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B',
       '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
       onduty: [],
-      occupied: {},
-      census: 98,
-      view: '',
-      emptyBeds: {},
+      occupied: [],
+      emptyBeds: [],
       assignment: [],
       nurses: {},
+      view: '',
     };
   }
 
@@ -45,16 +44,27 @@ class App extends Component {
   }
 
   refresh() {
-    $.get('/nurses').then((data) => {
-      this.setState({ nurses: data });
+    const obj = {};
+    const nQuery = $.get('/nurses');
+    const ocbQuery = $.get('/occupiedBeds');
+    const ebQuery = $.get('/emptyBeds');
+    nQuery.then(data => {
+      const res = [];
+      data.forEach(el => {
+        res.push(`${el.first} ${el.last}`);
+      });
+      obj.nurses = res;
     });
+    ocbQuery.then(data => {
+      obj.occupied = data.occupied;
+    });
+    ebQuery.then(data => {
+      obj.emptyBeds = data.emptyBeds;
+    });
+    this.setState(obj);
   }
 
   enter(event) {
-    // function removeFrom(emptyBeds, beds) {
-    //   return beds.filter(el => emptyBeds.indexOf(el) < 0);
-    // }
-
     if (event.keyCode === 13) {
       const value = event.target.value;
       if (value.slice(0, 3) === 'add') { // inserts a new nurse in db
@@ -63,9 +73,9 @@ class App extends Component {
       } else if (value.slice(0, 9) === 'discharge') {
         event.target.value = '';
         this.discharge(value);
-      } else if (value === 'clear') {
+      } else if (value === 'clear') { // turned off for now
         event.target.value = '';
-        this.reset();
+        this.refresh();
       } else if (value === 'assign') {
         event.target.value = '';
         this.assign();
@@ -92,12 +102,11 @@ class App extends Component {
   discharge(value) {
     const arr = value.toUpperCase().split(' ');
     arr.shift();
-    console.log('arr: ', arr);
     $.ajax({
       method: 'POST',
       url: '/emptyBeds',
       data: { emptyBeds: arr },
-    }).then(data => console.log('success: ', data));
+    });
   }
 
   admit(value) {
@@ -173,7 +182,6 @@ class App extends Component {
         '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
         onduty: [],
         occupied: {},
-        census: 98,
         view: '',
         emptyBeds: {},
         assignment: [],
@@ -198,7 +206,10 @@ class App extends Component {
         return (
           <div>
             <Input enter={this.enter} />
-            <Assign assignment={this.state.assignment} nurses={this.state.onduty} />
+            <Assign
+              assignment={this.state.assignment}
+              nurses={this.state.onduty}
+            />
           </div>
         );
       case 'display':
@@ -207,7 +218,7 @@ class App extends Component {
             <Input enter={this.enter} />
             <Display
               emptyBeds={this.state.emptyBeds}
-              census={this.state.census}
+              occupied={this.state.occupied}
             />
           </div>
         );
