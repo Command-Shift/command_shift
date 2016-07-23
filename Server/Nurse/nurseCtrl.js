@@ -62,10 +62,12 @@ function clearAssignments(req, res) {
 }
 
 function verifyNurse(req, res, next) {
-  Nurses.findOne({ first: req.body.first, last: req.body.first }, (err, nurse) => {
+  console.log('req.body.first', req.body.first)
+  console.log('req.body.last', req.body.last)
+  Nurses.findOne({ first: req.body.first, last: req.body.last }, (err, nurse) => {
     if (err) throw err;
     if (!nurse) res.send("Error! You don't know your own name.");
-    else next();
+    next();
   });
 }
 

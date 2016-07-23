@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 // <BedRow /> takes each object that was sent down from <AssignmentTable /> and returns an HTML table row with bed number and notes embedded (that are not null).
 var BedRow = React.createClass({
   render: function() {
-    var bed = this.props.assignment.id
+    var bed = this.props.assignment.bed
     return (
       <tr>
         <td>{bed}</td>
@@ -23,6 +23,7 @@ var AssignmentTable = React.createClass({
     this.props.assignments.forEach(function(assignment) {
       rows.push(<BedRow assignment={assignment} key={assignment.bed} />);
     }.bind(this));
+    console.log('rows',rows);
     return (
       <table>
         <thead>
@@ -51,6 +52,7 @@ var BedAssignments = React.createClass({
       success: function(data) {
         console.log('BedAssignmentData', data);
         this.setState({data: data});
+        console.log('this.state.data',this.state.data);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -60,8 +62,6 @@ var BedAssignments = React.createClass({
 
   handleLoginSubmit: function(name) {
     var names = this.state.data;
-    var newNames = names.concat([name]);
-    this.setState({data: newNames});
     $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -69,6 +69,7 @@ var BedAssignments = React.createClass({
       data: name,
       success: function(data) {
         this.setState({data: data});
+        console.log(data);
       }.bind(this),
       error: function(xhr, status, err) {
         this.setState({data: names});
@@ -84,16 +85,19 @@ var BedAssignments = React.createClass({
   componentDidMount: function() {
 
     // this.loadAssignmentsFromServer();
-    // setInterval(this.loadAssignmentsFromServer, this.props.pollInterval);
+    // console.log('componentdidmount',this.state.data)
+    //setInterval(this.loadAssignmentsFromServer, this.props.pollInterval);
 
   },
 
   componentWillUpdate: function() {
     //placeholder function. Not using it currently.
+    // console.log('will update')
   },
 
   componentDidUpdate: function() {
     //placeholder function. Not using it currently.
+    // console.log('updated')
   },
 
   render: function() {
