@@ -34,13 +34,12 @@ class App extends Component {
       '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B',
       '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
       onduty: [],
-      occupied: { },
-      census: 98,
-      view: '',
-      emptyBeds: { },
+      occupied: [],
+      emptyBeds: [],
       assignment: [],
-      nurses: { },
-      glossaryVisible: true
+      nurses: {},
+      glossaryVisible: true,
+      view: '',
     };
   }
 
@@ -49,17 +48,28 @@ class App extends Component {
   }
 
   refresh() {
-    $.get('/nurses').then((data) => {
-      this.setState({ nurses: data });
+    const obj = {};
+    const nQuery = $.get('/nurses');
+    const ocbQuery = $.get('/occupiedBeds');
+    const ebQuery = $.get('/emptyBeds');
+    nQuery.then(data => {
+      const res = [];
+      data.forEach(el => {
+        res.push(`${el.first} ${el.last}`);
+      });
+      obj.nurses = res;
     });
+    ocbQuery.then(data => {
+      obj.occupied = data.occupied;
+    });
+    ebQuery.then(data => {
+      obj.emptyBeds = data.emptyBeds;
+    });
+    this.setState(obj);
   }
 
   // all requests flow through the command line on pressing enter
   enter(event) {
-    // function removeFrom(emptyBeds, beds) {
-    //   return beds.filter(el => emptyBeds.indexOf(el) < 0);
-    // }
-
     if (event.keyCode === 13) {
       const value = event.target.value;
       if (value.slice(0, 3) === 'add') { // inserts a new nurse in db
@@ -68,9 +78,9 @@ class App extends Component {
       } else if (value.slice(0, 9) === 'discharge') {
         event.target.value = '';
         this.discharge(value);
-      } else if (value === 'clear') {
+      } else if (value === 'clear') { // turned off for now
         event.target.value = '';
-        this.reset();
+        this.refresh();
       } else if (value === 'assign') {
         event.target.value = '';
         this.assign();
@@ -87,7 +97,7 @@ class App extends Component {
       } else if (value.slice(0, 5) === 'admit') {
         event.target.value = '';
         this.admit(value);
-      } else if(value.slice(0,4) === 'note'){
+      } else if (value.slice(0, 4) === 'note') {
         event.target.value = '';
         this.addNote(value.slice(4));
       }else{
@@ -99,29 +109,28 @@ class App extends Component {
 
   // toggle admin glossary
   onClick() {
-    this.setState({glossaryVisible: !this.state.glossaryVisible});
+    this.setState({ glossaryVisible: !this.state.glossaryVisible });
   }
 
   addNote(value) {
     const bed = value.substr(0, value.indexOf(' '));
-    const note = value.substr(value.indexOf(' ')+1);
+    const note = value.substr(value.indexOf(' ') + 1);
     $.ajax({
       method: 'POST',
       url: '/note',
-      data: { bed: bed, note: note},
-    }).then(data => console.log('note sent'));
+      data: { bed, notes: note },
+    });
   }
 
   // bed(s) becomes unoccupied
   discharge(value) {
     const arr = value.toUpperCase().split(' ');
     arr.shift();
-    console.log('arr: ', arr);
     $.ajax({
       method: 'POST',
       url: '/emptyBeds',
       data: { emptyBeds: arr },
-    }).then(data => console.log('success: ', data));
+    });
   }
 
   // bed(s) becomes occupied
@@ -200,12 +209,12 @@ class App extends Component {
         '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B',
         '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
         onduty: [],
-        occupied: { },
-        census: 98,
-        view: '',
-        emptyBeds: { },
+        occupied: [],
+        emptyBeds: [],
         assignment: [],
-        nurses: data,
+        nurses: {},
+        glossaryVisible: true,
+        view: '',
       });
     });
   }
@@ -215,42 +224,57 @@ class App extends Component {
       case 'nurses':
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
+            <Input enter={this.enter} />
+            <GlossaryClick
+              glossaryVisible={this.state.glossaryVisible}
+              onClick={this.onClick}
+            />
             <Nurses
-              nurses={ this.state.nurses }
-              select={ this.select }
+              nurses={this.state.nurses}
+              select={this.select}
             />
           </div>
         );
       case 'assign':
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
-            <Assign assignment={ this.state.assignment } nurses={ this.state.onduty } />
+            <Input enter={this.enter} />
+            <GlossaryClick
+              glossaryVisible={this.state.glossaryVisible}
+              onClick={this.onClick}
+            />
+            <Assign
+              assignment={this.state.assignment}
+              nurses={this.state.onduty}
+            />
           </div>
         );
       case 'display':
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick } />
+            <Input enter={this.enter} />
+            <GlossaryClick
+              glossaryVisible={this.state.glossaryVisible}
+              onClick={this.onClick}
+            />
             <Display
-              emptyBeds={ this.state.emptyBeds }
-              census={ this.state.census }
+              emptyBeds={this.state.emptyBeds}
+              occupied={this.state.occupied}
             />
           </div>
         );
       default:
         return (
           <div>
-            <Input enter={ this.enter } />
-            <GlossaryClick glossaryVisible={ this.state.glossaryVisible } onClick={ this.onClick }/>
+            <Input enter={this.enter} />
+            <GlossaryClick
+              glossaryVisible={this.state.glossaryVisible}
+              onClick={this.onClick}
+            />
           </div>
         );
     }
   }
 }
 
-render(<App />, document.getElementById( 'content' ));
+render(<App />, document.getElementById('content'));

@@ -18,11 +18,22 @@ app.delete('/nurse', nurseCtrl.remove);
 app.get('/nurses', nurseCtrl.index);
 app.post('/nurse', nurseCtrl.add);
 // app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
+app.get('/emptyBeds', bedCtrl.getEmptyBeds, (req, res) => {
+  res.send(req.body.emptyBeds);
+});
+app.get('/occupiedBeds', bedCtrl.getOccupiedBeds, (req, res) => {
+  res.send(req.body.occupied);
+});
+app.post('/note', bedCtrl.addNote);
 app.post('/addBeds', bedCtrl.addBeds);
 app.post('/emptyBeds', bedCtrl.emptyBeds);
 app.post('/assign', bedCtrl.getOccupiedBeds, bedCtrl.assign, nurseCtrl.sendAssignment);
 app.post('/populate', bedCtrl.populate);
-app.post('/getAssignments', nurseCtrl.verifyNurse, cookieCtrl.setCookie, sessionCtrl.startSession, nurseCtrl.postAssignments);
+app.post('/getAssignments',
+  nurseCtrl.verifyNurse,
+  cookieCtrl.setCookie,
+  sessionCtrl.startSession,
+  nurseCtrl.postAssignments);
 app.post('/clear', nurseCtrl.clearAssignments);
 app.get('/getAssignments', sessionCtrl.isLoggedIn, nurseCtrl.postAssignments);
 
