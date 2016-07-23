@@ -50,6 +50,7 @@ class App extends Component {
       let value = event.target.value;
 
       if (value.slice(0, 3) === 'add') {
+        console.log('add');
         value = value.split(' ');
         const obj = {
           first: value[1],
@@ -103,6 +104,13 @@ class App extends Component {
           this.refresh();
         });
         event.target.value = '';
+      } else if (value === 'populate') {
+        let beds = {beds: this.state.beds};
+        $.ajax({
+          method: 'POST',
+          url: '/populate',
+          data: beds
+        });
       } else {
         event.target.value = '';
         this.setState({view: value});
@@ -149,7 +157,6 @@ class App extends Component {
         assignment.push(occupied.splice(0, spread.shift()));
       }
     }
-    console.log(assignment);
     this.setState({assignment: assignment, view: 'assign'});
 
     function randomSpread(arr) {

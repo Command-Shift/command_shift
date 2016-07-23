@@ -15,10 +15,12 @@ app.get('/', (req, res) => {
 app.delete('/nurse', nurseCtrl.remove);
 app.get('/nurses', nurseCtrl.index);
 app.post('/nurse', nurseCtrl.add);
-app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
+// app.post('/changeBed', bedCtrl.changeBed, nurseCtrl.changeBed);
 app.post('/addBeds', bedCtrl.addBeds);
-app.post('/emptyBeds', bedCtrol.emptyBeds);
-app.post('/assign', nurseCtrl.assign);
+app.post('/emptyBeds', bedCtrl.emptyBeds);
+// app.post('/assign', nurseCtrl.assign);
+app.post('/populate', bedCtrl.populate);
+
 
 
 app.listen(3000, function () {

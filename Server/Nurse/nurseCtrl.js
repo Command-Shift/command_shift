@@ -40,9 +40,9 @@ function assign(req, res, next){
   shift(nurses, beds)
 }
 
-function shift(nurses, beds){
-  nurses.forEach(function(nurse, index){
-    Nurses.update({first:,last:}, {$set: beds[index]})
-  })
-}
-module.exports = { index, show, post, remove };
+// function shift(nurses, beds){
+//   nurses.forEach(function(nurse, index){
+//     Nurses.update({first:last:}, {$set: beds[index]})
+//   })
+// }
+module.exports = { index, show, add, remove };

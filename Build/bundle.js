@@ -133,6 +133,7 @@
 	        var value = event.target.value;
 
 	        if (value.slice(0, 3) === 'add') {
+	          console.log('add');
 	          value = value.split(' ');
 	          var obj = {
 	            first: value[1],
@@ -152,6 +153,11 @@
 	          emptyBeds.shift();
 	          var occupied = remove(emptyBeds, [].concat(_toConsumableArray(this.state.beds)));
 	          var census = occupied.length;
+	          var _post = $.ajax({
+	            method: 'POST',
+	            url: '/emptyBeds',
+	            data: emptyBeds
+	          });
 	          this.setState({
 	            occupied: occupied,
 	            census: census,
@@ -171,15 +177,22 @@
 	            first: value[1],
 	            last: value[2]
 	          };
-	          var _post = $.ajax({
+	          var _post2 = $.ajax({
 	            method: 'DELETE',
 	            url: '/nurse',
 	            data: _obj
 	          });
-	          _post.then(function () {
+	          _post2.then(function () {
 	            _this3.refresh();
 	          });
 	          event.target.value = '';
+	        } else if (value === 'populate') {
+	          var beds = { beds: this.state.beds };
+	          $.ajax({
+	            method: 'POST',
+	            url: '/populate',
+	            data: beds
+	          });
 	        } else {
 	          event.target.value = '';
 	          this.setState({ view: value });
@@ -226,7 +239,6 @@
 	          assignment.push(_occupied.splice(0, spread.shift()));
 	        }
 	      }
-	      console.log(assignment);
 	      this.setState({ assignment: assignment, view: 'assign' });
 
 	      function randomSpread(arr) {
