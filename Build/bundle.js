@@ -98,6 +98,7 @@
 	    _this.reset = _this.reset.bind(_this);
 	    _this.assign = _this.assign.bind(_this);
 	    _this.add = _this.add.bind(_this);
+	    _this.remove = _this.remove.bind(_this);
 
 	    _this.state = {
 	      beds: ['2', '4', '6', '8A', '8B', '1A', '1B', '10A', '10B', '3A', '3B', '12A', '12B', '5A', '5B', '14A', '14B', '7A', '7B', '16A', '16B', '9A', '9B', '18A', '18B', '11A', '11B', '20A', '20B', '22A', '22B', '22C', '22D', '15A', '15B', '15C', '17A', '17B', '19A', '19B', '21A', '21B', '24A', '24B', '24C', '23A', '23B', '26A', '26B', '26C', '25A', '25B', '27A', '27B', '29A', '29B', '31A', '31B', '28A', '28B', '28C', '30A', '30B', '33A', '33B', '32A', '32B', '35A', '35B', '34A', '34B', '37A', '37B', '36A', '36B', '39A', '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B', '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
@@ -129,20 +130,24 @@
 	  }, {
 	    key: 'enter',
 	    value: function enter(event) {
-	      var _this3 = this;
+	      function removeFrom(emptyBeds, beds) {
+	        return beds.filter(function (el) {
+	          return emptyBeds.indexOf(el) < 0;
+	        });
+	      }
 
 	      if (event.keyCode === 13) {
+	        // refactor to switch
 	        var value = event.target.value;
-
 	        if (value.slice(0, 3) === 'add') {
-	          this.add(value);
 	          event.target.value = '';
+	          this.add(value);
 	        } else if (value.slice(0, 5) === 'empty') {
 	          var emptyBeds = value.toUpperCase().split(' ');
 	          emptyBeds.shift();
-	          var occupied = remove(emptyBeds, [].concat(_toConsumableArray(this.state.beds)));
+	          var occupied = removeFrom(emptyBeds, [].concat(_toConsumableArray(this.state.beds)));
 	          var census = occupied.length;
-	          var post = $.ajax({
+	          $.ajax({
 	            method: 'POST',
 	            url: '/emptyBeds',
 	            data: emptyBeds
@@ -161,21 +166,10 @@
 	          event.target.value = '';
 	          this.assign();
 	        } else if (value.slice(0, 6) === 'remove') {
-	          value = value.split(' ');
-	          var obj = {
-	            first: value[1],
-	            last: value[2]
-	          };
-	          var _post = $.ajax({
-	            method: 'DELETE',
-	            url: '/nurse',
-	            data: obj
-	          });
-	          _post.then(function () {
-	            _this3.refresh();
-	          });
 	          event.target.value = '';
+	          this.remove(value);
 	        } else if (value === 'populate') {
+	          // development only
 	          var beds = { beds: this.state.beds };
 	          $.ajax({
 	            method: 'POST',
@@ -187,17 +181,11 @@
 	          this.setState({ view: value });
 	        }
 	      }
-
-	      function remove(emptyBeds, beds) {
-	        return beds.filter(function (el) {
-	          if (emptyBeds.indexOf(el) < 0) return true;
-	        });
-	      }
 	    }
 	  }, {
 	    key: 'assign',
 	    value: function assign() {
-	      var _this4 = this;
+	      var _this3 = this;
 
 	      var nurses = [].concat(_toConsumableArray(this.state.onduty));
 	      $.ajax({
@@ -205,7 +193,7 @@
 	        url: '/assign',
 	        data: { onDuty: nurses }
 	      }).then(function (data) {
-	        _this4.setState({ onduty: nurses, occupied: data, view: 'assign' });
+	        _this3.setState({ onduty: nurses, occupied: data, view: 'assign' });
 	      });
 	    }
 	  }, {
@@ -217,7 +205,7 @@
 	  }, {
 	    key: 'add',
 	    value: function add(value) {
-	      var _this5 = this;
+	      var _this4 = this;
 
 	      value = value.split(' ');
 	      var obj = {
@@ -226,6 +214,25 @@
 	      };
 	      var post = $.ajax({
 	        method: 'POST',
+	        url: '/nurse',
+	        data: obj
+	      });
+	      post.then(function () {
+	        _this4.refresh();
+	      });
+	    }
+	  }, {
+	    key: 'remove',
+	    value: function remove(value) {
+	      var _this5 = this;
+
+	      value = value.split(' ');
+	      var obj = {
+	        first: value[1],
+	        last: value[2]
+	      };
+	      var post = $.ajax({
+	        method: 'DELETE',
 	        url: '/nurse',
 	        data: obj
 	      });
