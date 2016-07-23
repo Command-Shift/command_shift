@@ -61,7 +61,7 @@
 	  displayName: 'BedRow',
 
 	  render: function render() {
-	    var bed = this.props.assignment.id;
+	    var bed = this.props.assignment.bed;
 	    return _react2.default.createElement(
 	      'tr',
 	      null,
@@ -90,6 +90,7 @@
 	    this.props.assignments.forEach(function (assignment) {
 	      rows.push(_react2.default.createElement(BedRow, { assignment: assignment, key: assignment.bed }));
 	    }.bind(this));
+	    console.log('rows', rows);
 	    return _react2.default.createElement(
 	      'table',
 	      null,
@@ -136,6 +137,7 @@
 	      success: function (data) {
 	        console.log('BedAssignmentData', data);
 	        this.setState({ data: data });
+	        console.log('this.state.data', this.state.data);
 	      }.bind(this),
 	      error: function (xhr, status, err) {
 	        console.error(this.props.url, status, err.toString());
@@ -145,8 +147,6 @@
 
 	  handleLoginSubmit: function handleLoginSubmit(name) {
 	    var names = this.state.data;
-	    var newNames = names.concat([name]);
-	    this.setState({ data: newNames });
 	    $.ajax({
 	      url: this.props.url,
 	      dataType: 'json',
@@ -154,6 +154,7 @@
 	      data: name,
 	      success: function (data) {
 	        this.setState({ data: data });
+	        console.log(data);
 	      }.bind(this),
 	      error: function (xhr, status, err) {
 	        this.setState({ data: names });
@@ -169,16 +170,19 @@
 	  componentDidMount: function componentDidMount() {
 
 	    // this.loadAssignmentsFromServer();
-	    // setInterval(this.loadAssignmentsFromServer, this.props.pollInterval);
+	    // console.log('componentdidmount',this.state.data)
+	    //setInterval(this.loadAssignmentsFromServer, this.props.pollInterval);
 
 	  },
 
 	  componentWillUpdate: function componentWillUpdate() {
 	    //placeholder function. Not using it currently.
+	    // console.log('will update')
 	  },
 
 	  componentDidUpdate: function componentDidUpdate() {
 	    //placeholder function. Not using it currently.
+	    // console.log('updated')
 	  },
 
 	  render: function render() {

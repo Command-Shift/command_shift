@@ -37,9 +37,19 @@ app.post('/getAssignments',
   nurseCtrl.verifyNurse,
   cookieCtrl.setCookie,
   sessionCtrl.startSession,
-  nurseCtrl.postAssignments);
+  nurseCtrl.postAssignments
+  // (req, res) => {
+  // 	res.json([{bed:'1', notes: "He's a pirate"},{bed:'2', notes: null},{bed:'3', notes: "Check in every hour"}]);
+  // }
+  );
 app.post('/clear', nurseCtrl.clearAssignments);
-app.get('/getAssignments', sessionCtrl.isLoggedIn, nurseCtrl.postAssignments);
+app.get('/getAssignments', 
+	// sessionCtrl.isLoggedIn, 
+	// nurseCtrl.postAssignments
+	(req, res) => {
+  	  res.json([{bed:'4', notes: "He's a pirate"},{bed:'5', notes: null},{bed:'6', notes: "Check in every hour"}]);
+  }
+	);
 
 app.listen(3000, () => {
   console.log('Express listening on port 3000');
