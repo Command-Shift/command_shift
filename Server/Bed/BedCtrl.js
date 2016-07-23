@@ -1,4 +1,5 @@
 const Beds = require('./bedMdl');
+const Nurses = require('../Nurse/nurseCtrl');
 
 // function changeBed(req,res,next){
 // 	var oldBedNotes;
@@ -12,22 +13,7 @@ const Beds = require('./bedMdl');
 // 	})
 // }
 
-// add a patient
-function addBeds(req, res){
-	var bedsToAdd = req.body.addBeds;
-	bedsToAdd.forEach(function(bed){
-		Beds.update({bed: bed}, {$set: { status: true }});
-  });
-}
-
-// remove a patient
-function emptyBeds(req,res){
-	var bedsToEmpty = req.body.emptyBeds;
-	bedsToEmpty.forEach(function(bed){
-		Beds.update({bed: bed}, {$set: {status: false }});
-	})
-}
-
+// one-time instantiating and populating of all hospital beds
 function populate(req, res) {
   const arr = req.body.beds.map( el => {
     return {'bed': el};
@@ -37,6 +23,35 @@ function populate(req, res) {
   });
 }
 
+// add a patient to a bed
+function addBeds(req, res){
+	var bedsToAdd = req.body.addBeds;
+	bedsToAdd.forEach(function(bed){
+		Beds.update({bed: bed}, {$set: { status: true }});
+	});
+	res.sendStatus('Patients added!')
+}
+
+// remove a patient from a bed
+function emptyBeds(req,res){
+	var bedsToEmpty = req.body.emptyBeds;
+	bedsToEmpty.forEach(function(bed){
+		Beds.update({bed: bed}, {$set: {status: false }});
+	})
+	res.sendStatus('Patients removed!')
+}
+
+// query beds DB for all occupied beds, sent to the shift generating middleware algorithm
+function getOccupiedBeds(req,res,next){
+	Beds.find({status:true}, 'bed', function(err, beds){
+		if (err) throw err;
+		console.log(beds);
+		req.body.occupied = beds;
+		next();
+	});
+}
+
+<<<<<<< HEAD
 function assign(req, res, next) {
   // assign logic
   const occupied = [...req.body.occupied];
@@ -96,7 +111,7 @@ function assign(req, res, next) {
       a[j] = x;
     }
   }
-  
+
   next();
 }
 
