@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import GlossaryClick from './glossaryClick.jsx'
 
 export default class Input extends Component {
 
   render() {
     return (
       <div>
-        <h1>cmd-shift ...</h1>
+        <h1 className='title'>cmd_shift</h1>
         <div id="maininput">
           <input name="emptyBeds"
             type="text"
@@ -16,6 +17,10 @@ export default class Input extends Component {
             >
           </input>
           <span className="nothide">{this.props.clear}</span>
+          <GlossaryClick
+            glossaryVisible={this.props.glossaryVisible}
+            onClick={this.props.onClick}
+          />
         </div>
       </div>
     );

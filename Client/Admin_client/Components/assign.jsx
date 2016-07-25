@@ -4,6 +4,7 @@ import Run from './run.jsx';
 export default class Assign extends Component {
 
   render() {
+    console.log(this.props.assignment);
     return (
       <div className="container">
         {this.props.assignment.map((ar, i) => {
@@ -13,7 +14,7 @@ export default class Assign extends Component {
                 <span className="name" key={ i }>{ this.props.nurses[i] }</span>
               </div>
               <div className="body">
-                <Run run={ ar } key={ i } />
+                <Run run={ar} key={i} />
               </div>
             </div>
           );

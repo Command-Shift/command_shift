@@ -4,11 +4,10 @@ import ReactDOM from 'react-dom';
 // <BedRow /> takes each object that was sent down from <AssignmentTable /> and returns an HTML table row with bed number and notes embedded (that are not null).
 var BedRow = React.createClass({
   render: function() {
-    var bed = this.props.assignment.bed
+    var bed = this.props.assignment
     return (
       <tr>
         <td>{bed}</td>
-        <td>{this.props.assignment.notes}</td>
       </tr>
     );
   }
@@ -43,7 +42,7 @@ var AssignmentTable = React.createClass({
 //BedAssignemtns also has a handleLoginSubmit function to submit ajax post request which is passed down to <LoginForm />
 
 var BedAssignments = React.createClass({
-  
+
   loadAssignmentsFromServer: function() {
     $.ajax({
       url: this.props.url,

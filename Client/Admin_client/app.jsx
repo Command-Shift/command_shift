@@ -51,6 +51,7 @@ class App extends Component {
     if (!str) str = '';
     const obj = {
       view: str,
+      assignment: [],
     };
     const nQuery = $.get('/nurses');
     const ocbQuery = $.get('/occupiedBeds');
@@ -67,6 +68,7 @@ class App extends Component {
     });
     ebQuery.then(data => {
       obj.emptyBeds = data;
+      console.log(obj);
       this.setState(obj);
     });
   }
@@ -83,7 +85,7 @@ class App extends Component {
         this.discharge(value);
       } else if (value === 'clear') { // turned off for now
         event.target.value = '';
-        this.refresh();
+        this.reset();
       } else if (value === 'assign') {
         event.target.value = '';
         this.assign();
@@ -199,7 +201,7 @@ class App extends Component {
       data: obj,
     });
     post.then(() => {
-      this.refresh();
+      this.refresh('nurses');
     });
   }
 
@@ -216,11 +218,8 @@ class App extends Component {
         '39B', '38A', '38B', '41A', '41B', '40A', '40B', '43A', '43B', '42A', '42B',
         '45A', '45B', '47A', '47B', '46A', '46B', '44A', '44B', '44C', '48A', '48B'],
         onduty: [],
-        occupied: [],
-        emptyBeds: [],
         assignment: [],
-        nurses: {},
-        glossaryVisible: true,
+        glossaryVisible: false,
         view: '',
       });
     });
@@ -231,8 +230,8 @@ class App extends Component {
       case 'nurses':
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
@@ -245,8 +244,8 @@ class App extends Component {
       case 'assign':
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
@@ -259,8 +258,8 @@ class App extends Component {
       case 'display':
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />
@@ -273,8 +272,8 @@ class App extends Component {
       default:
         return (
           <div>
-            <Input enter={this.enter} />
-            <GlossaryClick
+            <Input
+              enter={this.enter}
               glossaryVisible={this.state.glossaryVisible}
               onClick={this.onClick}
             />

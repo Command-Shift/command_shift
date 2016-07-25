@@ -10,9 +10,8 @@ sessionController.startSession = function(req, res, next) {
   });
   newSession.save((err) => {
     if (err) throw err;
-  next();
+    next();
   });
-  
 };
 
 sessionController.isLoggedIn = function(req, res, next) {

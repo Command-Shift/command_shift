@@ -28,12 +28,6 @@ function remove(req, res) {
   });
 }
 
-// function updateBed(req,res){
-//   console.log(req.body);
-//   Nurses.update({beds: req.body.oldBed}, {$set: req.body.newBed}, function(err){
-//     if (err) throw err;
-//   });
-// }
 
 // updates nurse docs in nurse DB with new shift assignments
 function sendAssignment(req, res) {
@@ -62,8 +56,6 @@ function clearAssignments(req, res) {
 }
 
 function verifyNurse(req, res, next) {
-  console.log('req.body.first', req.body.first)
-  console.log('req.body.last', req.body.last)
   Nurses.findOne({ first: req.body.first, last: req.body.last }, (err, nurse) => {
     if (err) throw err;
     if (!nurse) res.send("Error! You don't know your own name.");
@@ -74,7 +66,8 @@ function verifyNurse(req, res, next) {
 function postAssignments(req, res) {
   Nurses.find({ first: req.body.first, last: req.body.last }, 'beds', (err, beds) => {
     if (err) throw err;
-    res.json(beds);
+    res.send(beds[0].beds);
+    // res.send(beds);
   });
 }
 
