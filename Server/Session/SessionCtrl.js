@@ -3,15 +3,15 @@ const Session = require('./sessionMdl');
 const sessionController = {};
 
 // nurse logs in when they arrive for work, session is kept so that any midshift assignment changes can update automatically via setInterval request
-sessionController.startSession = function(req, next) {
+sessionController.startSession = function(req, res, next) {
   const name = req.body.first + ' ' + req.body.last;
   const newSession = new Session({
     cookieId: name,
   });
   newSession.save((err) => {
     if (err) throw err;
+    next();
   });
-  next();
 };
 
 sessionController.isLoggedIn = function(req, res, next) {

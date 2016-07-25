@@ -62,17 +62,19 @@ function clearAssignments(req, res) {
 }
 
 function verifyNurse(req, res, next) {
-  Nurses.findOne({ first: req.body.first, last: req.body.first }, (err, nurse) => {
+  Nurses.findOne({ first: req.body.first, last: req.body.last }, (err, nurse) => {
     if (err) throw err;
     if (!nurse) res.send("Error! You don't know your own name.");
-    else next();
+    next();
   });
 }
 
 function postAssignments(req, res) {
   Nurses.find({ first: req.body.first, last: req.body.last }, 'beds', (err, beds) => {
     if (err) throw err;
-    res.json(beds);
+    console.log('beds',beds[0].beds);
+    res.send(beds[0].beds);
+    // res.send(beds);
   });
 }
 
